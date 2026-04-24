@@ -119,7 +119,7 @@ export default function Home() {
     <>
       {/* NAV */}
       <nav>
-        <a href="#" className="nav-logo">Ghoul&apos;s <span>Closet</span></a>
+        <a href="#" className="nav-logo">VORKA — Ghoul&apos;s <span>Closet</span></a>
         <ul>
           <li><a href="#catalog" onClick={e => { e.preventDefault(); scrollTo('catalog') }}>Boutique</a></li>
           <li><a href="#rachat" onClick={e => { e.preventDefault(); scrollTo('rachat') }}>Rachat</a></li>
@@ -147,7 +147,6 @@ export default function Home() {
           </div>
           <div className="hero-stats">
             <div className="hero-stat"><span className="num">150+</span><span className="label">Poupées disponibles</span></div>
-            <div className="hero-stat"><span className="num">98%</span><span className="label">Avis positifs</span></div>
             <div className="hero-stat"><span className="num">72h</span><span className="label">Délai d&apos;expédition</span></div>
           </div>
         </div>
