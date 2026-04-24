@@ -1,28 +1,25 @@
-import type { Metadata } from 'next';
-import './globals.css';
-import Navbar from '@/components/Navbar';
+import type { Metadata } from 'next'
+import './globals.css'
 
 export const metadata: Metadata = {
-  title: process.env.NEXT_PUBLIC_STORE_NAME || 'Ma Boutique',
-  description: 'Boutique en ligne — livraison automatique',
-};
+  title: "Ghoul's Closet — Monster High d'occasion",
+  description: "Achetez et vendez des poupées Monster High d'occasion. Collection vintage, éditions rares, envoi soigné.",
+  openGraph: {
+    title: "Ghoul's Closet",
+    description: "Monster High d'occasion — achat, vente, rachat",
+    url: 'https://vorka.eu',
+  },
+}
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr">
-      <body className="bg-gray-50 min-h-screen">
-        <Navbar />
-        <main className="max-w-6xl mx-auto px-4 py-8">
-          {children}
-        </main>
-        <footer className="border-t border-gray-200 mt-16 py-8 text-center text-sm text-gray-400">
-          © {new Date().getFullYear()} {process.env.NEXT_PUBLIC_STORE_NAME || 'Ma Boutique'}
-        </footer>
-      </body>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Josefin+Sans:wght@300;400;600;700&family=Special+Elite&display=swap" rel="stylesheet" />
+      </head>
+      <body>{children}</body>
     </html>
-  );
+  )
 }
