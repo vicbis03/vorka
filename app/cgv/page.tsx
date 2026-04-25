@@ -41,37 +41,37 @@ export default function CGVPage() {
           {
             icon: '🏚️',
             titre: 'Notre boutique',
-            contenu: `Ghoul's Closet ne dispose pas de stock fixe. Chaque poupée proposée à la vente est sourcée grâce à des recherches actives et au rachat auprès de particuliers. Le catalogue[...]`
+            contenu: `Ghoul's Closet ne dispose pas de stock fixe. Chaque poupée proposée à la vente est sourcée grâce à des recherches actives et au rachat auprès de particuliers. Le catalogue évolue donc régulièrement en fonction des acquisitions. Nous nous engageons à décrire chaque article avec la plus grande précision.`,
           },
           {
             icon: '💳',
             titre: 'Paiements',
-            contenu: `Paiement sécurisé par carte bancaire via Stripe. Le paiement est exigé à la commande. Aucune commande n'est réservée sans paiement confirmé. Toutes les transactions so[...]`
+            contenu: `Paiement sécurisé par carte bancaire via Stripe. Le paiement est exigé à la commande. Aucune commande n'est réservée sans paiement confirmé. Toutes les transactions sont chiffrées et sécurisées.`,
           },
           {
             icon: '📦',
             titre: 'Livraison',
-            contenu: `Expédition sous 72h en France et Belgique. Les frais de port sont calculés à la commande selon le poids et la destination. Chaque colis est soigneusement emballé pour pro[...]`
+            contenu: `Expédition sous 72h en France et Belgique. Les frais de port sont calculés à la commande selon le poids et la destination. Chaque colis est soigneusement emballé pour protéger les poupées pendant le transport. Un numéro de suivi vous est communiqué par email dès l'expédition.`,
           },
           {
             icon: '🔄',
             titre: 'Retours',
-            contenu: `Retour accepté sous 14 jours si la poupée ne correspond pas à la description. Les frais de retour sont à la charge du client. Le remboursement est effectué après récep[...]`
+            contenu: `Retour accepté sous 14 jours si la poupée ne correspond pas à la description. Les frais de retour sont à la charge du client. Le remboursement est effectué après réception et vérification du colis. Les articles retournés endommagés ou incomplets ne pourront pas être remboursés.`,
           },
           {
             icon: '🔍',
             titre: 'État des produits',
-            contenu: `Chaque poupée est décrite avec précision : état général, accessoires inclus, présence ou non de la boîte d'origine, défauts éventuels. Les photos sont contractuelle[...]`
+            contenu: `Chaque poupée est décrite avec précision : état général, accessoires inclus, présence ou non de la boîte d'origine, défauts éventuels. Les photos sont contractuelles. Nous utilisons les mentions suivantes : Très bon état, Bon état, Acceptable et À restaurer.`,
           },
           {
             icon: '💰',
             titre: 'Rachat de poupées',
-            contenu: `Ghoul's Closet propose le rachat de poupées Monster High auprès de particuliers. À l'issue du rachat, le vendeur peut choisir entre :\n\n• Un bon d'achat utilisable sur [...]`
+            contenu: `Ghoul's Closet propose le rachat de poupées Monster High auprès de particuliers. À l'issue du rachat, le vendeur peut choisir entre :\n\n• Un bon d'achat utilisable sur la boutique\n• Un paiement en espèces par virement bancaire ou PayPal, comme une vente classique\n\nLe montant proposé est basé sur l'état de la poupée, sa rareté, et les accessoires présents. Toutes les générations Monster High sont acceptées. Nous n'acceptons pas les poupées fortement abîmées ou incomplètes.`,
           },
           {
             icon: '⚖️',
             titre: 'Responsabilité',
-            contenu: `Ghoul's Closet est un service de revente de poupées d'occasion. Monster High est une marque déposée de Mattel, Inc. Nous ne sommes pas affiliés à Mattel. Les prix sont f[...]`
+            contenu: `Ghoul's Closet est un service de revente de poupées d'occasion. Monster High est une marque déposée de Mattel, Inc. Nous ne sommes pas affiliés à Mattel. Les prix sont fixés librement en fonction du marché de l'occasion.`,
           },
           {
             icon: '📧',
@@ -104,7 +104,12 @@ export default function CGVPage() {
               margin: 0,
               fontSize: '0.9rem',
               whiteSpace: 'pre-line',
-            }}>
+              overflow: 'visible',
+              display: 'block',
+              WebkitLineClamp: 'unset',
+              WebkitBoxOrient: 'unset',
+              maxHeight: 'none',
+            } as React.CSSProperties}>
               {section.contenu}
             </p>
           </div>
