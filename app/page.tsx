@@ -123,7 +123,7 @@ export default function Home() {
         <ul>
           <li><a href="#catalog" onClick={e => { e.preventDefault(); scrollTo('catalog') }}>Boutique</a></li>
           <li><a href="#rachat" onClick={e => { e.preventDefault(); scrollTo('rachat') }}>Rachat</a></li>
-          <li><a href="#footer" onClick={e => { e.preventDefault(); scrollTo('footer') }}>Contact</a></li>
+          <li><a href="/contact">Contact</a></li>
         </ul>
         <button className="nav-badge" onClick={() => scrollTo('rachat')}>💀 Vendre mes poupées</button>
       </nav>
