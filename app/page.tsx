@@ -36,8 +36,8 @@ const PRODUCTS: Product[] = [
     name: "Draculaura Sweet 1600 — Edition Anniversaire",
     meta1: '🌙 Complète avec accessoires',
     meta2: '📦 Boîte incluse',
-    price: '18€',
-    priceNum: 18,
+    price: '12€',
+    priceNum: 12,
     sold: false,
   },
   {
