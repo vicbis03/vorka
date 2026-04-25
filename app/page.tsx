@@ -122,10 +122,12 @@ export default function Home() {
         <a href="#" className="nav-logo">VORKA — Ghoul&apos;s <span>Closet</span></a>
         <ul>
           <li><a href="#catalog" onClick={e => { e.preventDefault(); scrollTo('catalog') }}>Boutique</a></li>
-          <li><a href="#rachat" onClick={e => { e.preventDefault(); scrollTo('rachat') }}>Rachat</a></li>
+          <li><a href="#rachat">Rachat</a></li>
           <li><a href="/contact">Contact</a></li>
         </ul>
-        <button className="nav-badge" onClick={() => scrollTo('rachat')}>💀 Vendre mes poupées</button>
+        <button onClick={() => document.getElementById('rachat')?.scrollIntoView({behavior:'smooth'})}>
+💀 Vendre mes poupées
+</button>
       </nav>
 
       {/* HERO */}
@@ -295,7 +297,7 @@ export default function Home() {
       <footer id="footer">
         <div className="logo">Ghoul&apos;s <span>Closet</span></div>
         <div className="footer-links">
-          {['À propos', 'Boutique', 'Rachat', 'CGV', 'Contact'].map(l => <a key={l} href="#">{l}</a>)}
+        <a href="/contact">Contact</a>{['À propos', 'Boutique', 'Rachat', 'CGV'].map(l => <a key={l} href="#">{l}</a>)}
         </div>
         <p>☠ 2025 — Ghoul&apos;s Closet — Tous droits réservés ☠</p>
         <p style={{ marginTop: '0.5rem', fontSize: '0.7rem', opacity: 0.5 }}>Fan site — Monster High est une marque déposée de Mattel, Inc.</p>
