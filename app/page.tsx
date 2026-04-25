@@ -51,8 +51,8 @@ const PRODUCTS: Product[] = [
     name: "Frankie Stein Electrifying Style — 1ère Gen",
     meta1: '🔩 Quelques taches mineures',
     meta2: '📦 Sans boîte',
-    price: '12€',
-    priceNum: 12,
+    price: 18€',
+    priceNum: 18,
     sold: false,
   },
   {
