@@ -36,8 +36,8 @@ const PRODUCTS: Product[] = [
     name: "Draculaura Sweet 1600 — Edition Anniversaire",
     meta1: '🌙 Complète avec accessoires',
     meta2: '📦 Boîte incluse',
-    price: '12€',
-    priceNum: 12,
+    price: '18€',
+    priceNum: 18,
     sold: false,
   },
   {
@@ -51,8 +51,8 @@ const PRODUCTS: Product[] = [
     name: "Frankie Stein Electrifying Style — 1ère Gen",
     meta1: '🔩 Quelques taches mineures',
     meta2: '📦 Sans boîte',
-    price: 18€',
-    priceNum: 18,
+    price: 12€',
+    priceNum: 12,
     sold: false,
   },
   {
