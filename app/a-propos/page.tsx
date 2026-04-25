@@ -34,7 +34,7 @@ export default function AProposPage() {
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
           }}>
-            À propos de<br />Ghoul's Closet
+            À propos de<br />Vorka Ghoul's Closet
           </h1>
           <p style={{ color: '#aaa', lineHeight: 1.8, fontSize: '1rem', margin: 0 }}>
             Vorka Ghoul's Closet est une boutique spécialisée dans la vente et le rachat de poupées
