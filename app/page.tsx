@@ -209,7 +209,19 @@ export default function Home() {
         }}
         aria-label="Panier"
       >
-        💀
+        <img
+          src="/skull.png"
+          alt="Panier"
+          style={{
+            width: '34px',
+            height: '34px',
+            objectFit: 'contain',
+            filter: skullHovered
+              ? 'drop-shadow(0 0 8px #ff2d78) brightness(1.1)'
+              : 'drop-shadow(0 0 2px rgba(255,45,120,0.3))',
+            transition: 'filter 0.25s',
+          }}
+        />
         {totalItems > 0 && (
           <span style={{
             position: 'absolute',
@@ -271,7 +283,7 @@ export default function Home() {
           justifyContent: 'space-between',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <span style={{ fontSize: '1.4rem' }}>💀</span>
+            <img src="/skull.png" alt="" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
             <div>
               <h2 style={{ color: '#fff', margin: 0, fontSize: '1rem', fontWeight: 700 }}>Mon panier</h2>
               <p style={{ color: '#666', margin: 0, fontSize: '0.75rem' }}>
@@ -298,7 +310,7 @@ export default function Home() {
         <div style={{ flex: 1, overflowY: 'auto', padding: '1rem 1.5rem' }}>
           {cart.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '3rem 1rem', color: '#444' }}>
-              <div style={{ fontSize: '3rem', marginBottom: '1rem', opacity: 0.4 }}>💀</div>
+              <img src="/skull.png" alt="" style={{ width: '60px', height: '60px', objectFit: 'contain', opacity: 0.3, marginBottom: '1rem' }} />
               <p style={{ fontSize: '0.9rem' }}>Ton panier est vide, ghoul...</p>
               <button
                 onClick={() => setSidebarOpen(false)}
