@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
     await resend.emails.send({
       from: 'Vorka Contact <noreply@vorka.eu>',
       to: ['contact@vorka.eu'],
-      replyTo: email,
+      reply_to: email,
       subject: `[Contact Vorka] ${sujet} — de ${nom}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background: #f9f9f9; border-radius: 8px;">
