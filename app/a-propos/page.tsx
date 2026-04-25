@@ -37,7 +37,7 @@ export default function AProposPage() {
             À propos de<br />Ghoul's Closet
           </h1>
           <p style={{ color: '#aaa', lineHeight: 1.8, fontSize: '1rem', margin: 0 }}>
-            Ghoul's Closet est une boutique spécialisée dans la vente et le rachat de poupées
+            Vorka Ghoul's Closet est une boutique spécialisée dans la vente et le rachat de poupées
             Monster High d'occasion. Basée en France, nous sélectionnons chaque poupée avec soin
             pour vous offrir les meilleures trouvailles de la Ghoul Squad.
           </p>
