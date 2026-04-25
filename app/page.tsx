@@ -139,10 +139,10 @@ export default function Home() {
           <p className="hero-eyebrow">☠ Collection exclusive de seconde main ☠</p>
           <h1 className="hero-title">
             <span className="line1">Monster High</span>
-            <span className="line2">d&apos;occasion</span>
-            <span className="line3">Réservoir</span>
+            <span className="line2">de collection</span>
+            <span className="line3">d&apos;occasion</span>
           </h1>
-          <p className="hero-sub">Des poupées monstrueusement belles à prix décharnés. Achetez, vendez, échangez — rejoignez la Ghoul Squad !</p>
+          <p className="hero-sub">Des poupées monstrueusement belles à prix décharnés. Achetez, vendez — rejoignez la Ghoul Squad !</p>
           <div className="hero-ctas">
             <a href="#catalog" className="btn-primary" onClick={e => { e.preventDefault(); scrollTo('catalog') }}>Voir la boutique</a>
             <a href="#rachat" className="btn-secondary" onClick={e => { e.preventDefault(); scrollTo('rachat') }}>Proposer un rachat</a>
