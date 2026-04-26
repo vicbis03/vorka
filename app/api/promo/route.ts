@@ -30,4 +30,12 @@ export async function POST(req: NextRequest) {
     description: promo.description,
     newTotal: Math.max(0, total - discount),
   })
+  {
+  "GHOUL10": { "type": "percent", "value": 10, "description": "10% de réduction" },
+  "GHOUL20": { "type": "percent", "value": 20, "description": "20% de réduction" },
+  "BIENVENUE": { "type": "percent", "value": 15, "description": "15% nouveaux clients" },
+  "RACHAT5": { "type": "fixed", "value": 5, "description": "5€ offerts après rachat" },
+  "HALLOWEEN": { "type": "percent", "value": 30, "description": "30% Halloween" },
+  "VIP2026": { "type": "fixed", "value": 10, "description": "10€ VIP" }
+}
 }
