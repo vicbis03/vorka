@@ -113,7 +113,7 @@ const PRODUCTS: Product[] = [
     meta2: '',
     price: '15€',
     priceNum: 15,
-    sold: true,
+    sold: false,
   },
 ]
 
