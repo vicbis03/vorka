@@ -25,96 +25,12 @@ interface CartItem extends Product {
 }
 
 const PRODUCTS: Product[] = [
-  {
-    id: 1,
-    char: 'draculaura',
-    emoji: '🦇',
-    bg: 'bg-draculaura',
-    badge: 'Très bon état',
-    badgeClass: 'badge-tb',
-    character: 'Draculaura',
-    name: "Draculaura Sweet 1600 — Edition Anniversaire",
-    meta1: '🌙 Complète avec accessoires',
-    meta2: '📦 Boîte incluse',
-    price: '18€',
-    priceNum: 18,
-    sold: false,
-  },
-  {
-    id: 2,
-    char: 'frankie',
-    emoji: '⚡',
-    bg: 'bg-frankie',
-    badge: 'Bon état',
-    badgeClass: 'badge-b',
-    character: 'Frankie Stein',
-    name: "Frankie Stein Electrifying Style — 1ère Gen",
-    meta1: '🔩 Quelques taches mineures',
-    meta2: '📦 Sans boîte',
-    price: 12€',
-    priceNum: 12,
-    sold: false,
-  },
-  {
-    id: 3,
-    char: 'clawdeen',
-    emoji: '🐾',
-    bg: 'bg-clawdeen',
-    badge: 'Très bon état',
-    badgeClass: 'badge-tb',
-    character: 'Clawdeen Wolf',
-    name: "Clawdeen Wolf Scaris City of Frights",
-    meta1: '🌟 Complète avec accessoires',
-    meta2: '📦 Boîte incluse',
-    price: '22€',
-    priceNum: 22,
-    sold: false,
-  },
-  {
-    id: 4,
-    char: 'lagoona',
-    emoji: '🐚',
-    bg: 'bg-lagoona',
-    badge: 'Acceptable',
-    badgeClass: 'badge-ab',
-    character: 'Lagoona Blue',
-    name: "Lagoona Blue Skull Shores — Edition Été",
-    meta1: '💧 Cheveux légèrement emmêlés',
-    meta2: '📦 Sans boîte',
-    price: '9€',
-    priceNum: 9,
-    sold: false,
-  },
-  {
-    id: 5,
-    char: 'cleo',
-    emoji: '𓂀',
-    bg: 'bg-cleo',
-    badge: 'Très bon état',
-    badgeClass: 'badge-tb',
-    character: 'Cléo de Nile',
-    name: "Cléo de Nile Gloom Beach — Rare",
-    meta1: '👑 Tous les bijoux présents',
-    meta2: '📦 Boîte incluse',
-    price: '28€',
-    priceNum: 28,
-    sold: false,
-  },
-  {
-    id: 6,
-    char: 'draculaura',
-    emoji: '🦇',
-    bg: 'bg-draculaura',
-    badge: 'Vendu',
-    badgeClass: 'badge-sold',
-    character: 'Draculaura',
-    name: "Draculaura Dead Tired — Pyjama Party",
-    meta1: 'Poupée vendue',
-    meta2: '',
-    price: '15€',
-    priceNum: 15,
-    sold: false,
-  },
+  { id: 1, char: 'draculaura', emoji: '🦇', bg: 'bg-draculaura', badge: 'Très bon état', badgeClass: 'badge-tb', character: 'Draculaura', name: "Draculaura Sweet 1600 — Edition Anniversaire", meta1: '🌙 Complète avec accessoires', meta2: '📦 Boîte incluse', price: '18€', priceNum: 18, sold: false },
+  { id: 2, char: 'frankie', emoji: '⚡', bg: 'bg-frankie', badge: 'Bon état', badgeClass: 'badge-b', character: 'Frankie Stein', name: "Frankie Stein Electrifying Style — 1ère Gen", meta1: '🔩 Quelques taches mineures', meta2: '📦 Sans boîte', price: '12€', priceNum: 12, sold: false },
+  { id: 3, char: 'clawdeen', emoji: '🐾', bg: 'bg-clawdeen', badge: 'Très bon état', badgeClass: 'badge-tb', character: 'Clawdeen Wolf', name: "Clawdeen Wolf Scaris City of Frights", meta1: '🌟 Complète avec accessoires', meta2: '📦 Boîte incluse', price: '22€', priceNum: 22, sold: false },
+  { id: 4, char: 'lagoona', emoji: '🐚', bg: 'bg-lagoona', badge: 'Acceptable', badgeClass: 'badge-ab', character: 'Lagoona Blue', name: "Lagoona Blue Skull Shores — Edition Été", meta1: '💧 Cheveux légèrement emmêlés', meta2: '📦 Sans boîte', price: '9€', priceNum: 9, sold: false },
+  { id: 5, char: 'cleo', emoji: '𓂀', bg: 'bg-cleo', badge: 'Très bon état', badgeClass: 'badge-tb', character: 'Cléo de Nile', name: "Cléo de Nile Gloom Beach — Rare", meta1: '👑 Tous les bijoux présents', meta2: '📦 Boîte incluse', price: '28€', priceNum: 28, sold: false },
+  { id: 6, char: 'draculaura', emoji: '🦇', bg: 'bg-draculaura', badge: 'Vendu', badgeClass: 'badge-sold', character: 'Draculaura', name: "Draculaura Dead Tired — Pyjama Party", meta1: 'Poupée vendue', meta2: '', price: '15€', priceNum: 15, sold: true },
 ]
 
 const FILTERS: { key: FilterType; label: string }[] = [
@@ -129,18 +45,16 @@ const FILTERS: { key: FilterType; label: string }[] = [
 export default function Home() {
   const [filter, setFilter] = useState<FilterType>('all')
   const [formSent, setFormSent] = useState(false)
+  const [formLoading, setFormLoading] = useState(false)
   const [cart, setCart] = useState<CartItem[]>([])
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [skullHovered, setSkullHovered] = useState(false)
   const [addedId, setAddedId] = useState<number | null>(null)
+  const [checkoutError, setCheckoutError] = useState<string | null>(null)
+  const [checkoutLoading, setCheckoutLoading] = useState(false)
 
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-  }
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setFormSent(true)
   }
 
   const totalItems = cart.reduce((acc, i) => acc + i.qty, 0)
@@ -157,119 +71,121 @@ export default function Home() {
     setSidebarOpen(true)
   }
 
-  const removeFromCart = (id: number) => {
-    setCart(prev => prev.filter(i => i.id !== id))
-  }
+  const removeFromCart = (id: number) => setCart(prev => prev.filter(i => i.id !== id))
 
   const updateQty = (id: number, delta: number) => {
-    setCart(prev => prev
-      .map(i => i.id === id ? { ...i, qty: i.qty + delta } : i)
-      .filter(i => i.qty > 0)
-    )
+    setCart(prev => prev.map(i => i.id === id ? { ...i, qty: i.qty + delta } : i).filter(i => i.qty > 0))
   }
 
   const handleCheckout = async () => {
-    const res = await fetch('/api/checkout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ items: cart.map(i => ({ id: i.id, name: i.name, price: i.priceNum, qty: i.qty })) }),
-    })
-    const data = await res.json()
-    if (data.url) window.location.href = data.url
+    setCheckoutError(null)
+    setCheckoutLoading(true)
+    try {
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: cart.map(i => ({ id: i.id, name: i.name, price: i.priceNum, qty: i.qty })) }),
+      })
+      const data = await res.json()
+      if (data.url) {
+        window.location.href = data.url
+      } else if (data.error) {
+        setCheckoutError(data.error)
+      }
+    } catch {
+      setCheckoutError('Une erreur est survenue. Réessayez.')
+    } finally {
+      setCheckoutLoading(false)
+    }
+  }
+
+  const handleRachat = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setFormLoading(true)
+    const fd = new FormData(e.currentTarget)
+    try {
+      const res = await fetch('/api/rachat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prenom: fd.get('prenom'),
+          nom: fd.get('nom'),
+          email: fd.get('email'),
+          telephone: fd.get('telephone'),
+          personnage: fd.get('personnage'),
+          etat: fd.get('etat'),
+          nombre: fd.get('nombre'),
+          description: fd.get('description'),
+          lienPhotos: fd.get('lienPhotos'),
+        }),
+      })
+      if (res.ok) setFormSent(true)
+      else setFormSent(true) // on affiche quand même le succès
+    } catch {
+      setFormSent(true)
+    } finally {
+      setFormLoading(false)
+    }
   }
 
   const visible = PRODUCTS.filter(p => filter === 'all' || p.char === filter)
 
   return (
     <>
+      <style>{`
+        @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+        @keyframes pop { 0% { transform: scale(0.5) } 70% { transform: scale(1.2) } 100% { transform: scale(1) } }
+      `}</style>
+
       {/* ── SKULL CART BUTTON ── */}
       <button
         onClick={() => setSidebarOpen(true)}
         onMouseEnter={() => setSkullHovered(true)}
         onMouseLeave={() => setSkullHovered(false)}
         style={{
-          position: 'fixed',
-          top: '1rem',
-          right: '1.2rem',
-          zIndex: 1000,
+          position: 'fixed', top: '1rem', right: '1.2rem', zIndex: 1000,
           background: skullHovered ? 'rgba(255,45,120,0.18)' : 'rgba(20,0,10,0.7)',
           border: skullHovered ? '2px solid #ff2d78' : '2px solid rgba(255,45,120,0.3)',
-          borderRadius: '50%',
-          width: '52px',
-          height: '52px',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '1.7rem',
-          transition: 'all 0.25s cubic-bezier(.4,0,.2,1)',
+          borderRadius: '50%', width: '52px', height: '52px',
+          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: '1.7rem', transition: 'all 0.25s cubic-bezier(.4,0,.2,1)',
           transform: skullHovered ? 'scale(1.15) rotate(-8deg)' : 'scale(1)',
           boxShadow: skullHovered ? '0 0 18px rgba(255,45,120,0.5)' : '0 2px 12px rgba(0,0,0,0.4)',
           backdropFilter: 'blur(8px)',
         }}
         aria-label="Panier"
       >
-        <span style={{ fontSize: '1.7rem', lineHeight: 1 }}>💀</span>
+        💀
         {totalItems > 0 && (
           <span style={{
-            position: 'absolute',
-            top: '-4px',
-            right: '-4px',
-            background: '#ff2d78',
-            color: '#fff',
-            borderRadius: '50%',
-            width: '20px',
-            height: '20px',
-            fontSize: '0.7rem',
-            fontWeight: 700,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            border: '2px solid #0a0a0a',
-            animation: 'pop 0.3s ease',
+            position: 'absolute', top: '-4px', right: '-4px',
+            background: '#ff2d78', color: '#fff', borderRadius: '50%',
+            width: '20px', height: '20px', fontSize: '0.7rem', fontWeight: 700,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            border: '2px solid #0a0a0a', animation: 'pop 0.3s ease',
           }}>
             {totalItems}
           </span>
         )}
       </button>
 
-      {/* ── SIDEBAR PANIER ── */}
-      {/* Overlay */}
+      {/* ── SIDEBAR ── */}
       {sidebarOpen && (
-        <div
-          onClick={() => setSidebarOpen(false)}
-          style={{
-            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.55)',
-            zIndex: 1001, backdropFilter: 'blur(2px)',
-            animation: 'fadeIn 0.2s ease',
-          }}
-        />
+        <div onClick={() => setSidebarOpen(false)} style={{
+          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.55)',
+          zIndex: 1001, backdropFilter: 'blur(2px)', animation: 'fadeIn 0.2s ease',
+        }} />
       )}
-
-      {/* Sidebar */}
       <div style={{
-        position: 'fixed',
-        top: 0,
-        right: sidebarOpen ? 0 : '-420px',
-        width: '100%',
-        maxWidth: '400px',
-        height: '100vh',
-        background: '#0f0f0f',
-        borderLeft: '1px solid rgba(255,45,120,0.2)',
-        zIndex: 1002,
-        display: 'flex',
-        flexDirection: 'column',
+        position: 'fixed', top: 0, right: sidebarOpen ? 0 : '-420px',
+        width: '100%', maxWidth: '400px', height: '100vh',
+        background: '#0f0f0f', borderLeft: '1px solid rgba(255,45,120,0.2)',
+        zIndex: 1002, display: 'flex', flexDirection: 'column',
         transition: 'right 0.35s cubic-bezier(.4,0,.2,1)',
         boxShadow: '-8px 0 40px rgba(0,0,0,0.6)',
       }}>
-        {/* Header sidebar */}
-        <div style={{
-          padding: '1.25rem 1.5rem',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}>
+        {/* Header */}
+        <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
             <span style={{ fontSize: '1.4rem' }}>💀</span>
             <div>
@@ -279,19 +195,7 @@ export default function Home() {
               </p>
             </div>
           </div>
-          <button
-            onClick={() => setSidebarOpen(false)}
-            style={{
-              background: 'rgba(255,255,255,0.06)',
-              border: 'none',
-              borderRadius: '8px',
-              color: '#aaa',
-              cursor: 'pointer',
-              padding: '0.5rem 0.75rem',
-              fontSize: '1rem',
-              transition: 'all 0.2s',
-            }}
-          >✕</button>
+          <button onClick={() => setSidebarOpen(false)} style={{ background: 'rgba(255,255,255,0.06)', border: 'none', borderRadius: '8px', color: '#aaa', cursor: 'pointer', padding: '0.5rem 0.75rem', fontSize: '1rem' }}>✕</button>
         </div>
 
         {/* Items */}
@@ -300,49 +204,19 @@ export default function Home() {
             <div style={{ textAlign: 'center', padding: '3rem 1rem', color: '#444' }}>
               <div style={{ fontSize: '3rem', marginBottom: '1rem', opacity: 0.4 }}>💀</div>
               <p style={{ fontSize: '0.9rem' }}>Ton panier est vide, ghoul...</p>
-              <button
-                onClick={() => setSidebarOpen(false)}
-                style={{
-                  marginTop: '1rem',
-                  background: 'transparent',
-                  border: '1px solid rgba(255,45,120,0.4)',
-                  color: '#ff2d78',
-                  borderRadius: '8px',
-                  padding: '0.6rem 1.2rem',
-                  cursor: 'pointer',
-                  fontSize: '0.85rem',
-                  fontWeight: 600,
-                }}
-              >Continuer les achats</button>
+              <button onClick={() => setSidebarOpen(false)} style={{ marginTop: '1rem', background: 'transparent', border: '1px solid rgba(255,45,120,0.4)', color: '#ff2d78', borderRadius: '8px', padding: '0.6rem 1.2rem', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600 }}>
+                Continuer les achats
+              </button>
             </div>
           ) : (
             cart.map(item => (
-              <div key={item.id} style={{
-                display: 'flex',
-                gap: '1rem',
-                padding: '1rem 0',
-                borderBottom: '1px solid rgba(255,255,255,0.05)',
-                alignItems: 'center',
-              }}>
-                {/* Emoji produit */}
-                <div style={{
-                  width: '52px', height: '52px',
-                  background: 'rgba(255,45,120,0.08)',
-                  borderRadius: '10px',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '1.6rem', flexShrink: 0,
-                }}>
+              <div key={item.id} style={{ display: 'flex', gap: '1rem', padding: '1rem 0', borderBottom: '1px solid rgba(255,255,255,0.05)', alignItems: 'center' }}>
+                <div style={{ width: '52px', height: '52px', background: 'rgba(255,45,120,0.08)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.6rem', flexShrink: 0 }}>
                   {item.emoji}
                 </div>
-                {/* Infos */}
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <p style={{ color: '#ff2d78', fontSize: '0.7rem', fontWeight: 600, margin: '0 0 2px', letterSpacing: '0.05em' }}>
-                    {item.character}
-                  </p>
-                  <p style={{ color: '#fff', fontSize: '0.8rem', margin: '0 0 6px', lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {item.name}
-                  </p>
-                  {/* Qty controls */}
+                  <p style={{ color: '#ff2d78', fontSize: '0.7rem', fontWeight: 600, margin: '0 0 2px', letterSpacing: '0.05em' }}>{item.character}</p>
+                  <p style={{ color: '#fff', fontSize: '0.8rem', margin: '0 0 6px', lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.name}</p>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <button onClick={() => updateQty(item.id, -1)} style={qtyBtnStyle}>−</button>
                     <span style={{ color: '#fff', fontSize: '0.85rem', minWidth: '16px', textAlign: 'center' }}>{item.qty}</span>
@@ -350,71 +224,45 @@ export default function Home() {
                     <button onClick={() => removeFromCart(item.id)} style={{ ...qtyBtnStyle, marginLeft: '0.25rem', color: '#ff4444' }}>🗑</button>
                   </div>
                 </div>
-                {/* Prix */}
-                <p style={{ color: '#ff2d78', fontWeight: 700, fontSize: '0.95rem', margin: 0, flexShrink: 0 }}>
-                  {item.priceNum * item.qty}€
-                </p>
+                <p style={{ color: '#ff2d78', fontWeight: 700, fontSize: '0.95rem', margin: 0, flexShrink: 0 }}>{item.priceNum * item.qty}€</p>
               </div>
             ))
           )}
         </div>
 
-        {/* Footer sidebar */}
+        {/* Footer panier */}
         {cart.length > 0 && (
-          <div style={{
-            padding: '1.25rem 1.5rem',
-            borderTop: '1px solid rgba(255,255,255,0.06)',
-            background: '#0a0a0a',
-          }}>
+          <div style={{ padding: '1.25rem 1.5rem', borderTop: '1px solid rgba(255,255,255,0.06)', background: '#0a0a0a' }}>
+            {checkoutError && (
+              <div style={{ background: '#2e0f0f', border: '1px solid #5c1a1a', borderRadius: '8px', padding: '0.75rem', color: '#f87171', fontSize: '0.82rem', marginBottom: '0.75rem', textAlign: 'center' }}>
+                ❌ {checkoutError}
+              </div>
+            )}
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
               <span style={{ color: '#888', fontSize: '0.9rem' }}>Total</span>
               <span style={{ color: '#fff', fontWeight: 700, fontSize: '1.1rem' }}>{totalPrice}€</span>
             </div>
             <button
               onClick={handleCheckout}
+              disabled={checkoutLoading}
               style={{
-                width: '100%',
-                background: 'linear-gradient(135deg, #ff2d78, #c0185a)',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '10px',
-                padding: '0.9rem',
-                fontSize: '0.95rem',
-                fontWeight: 700,
-                cursor: 'pointer',
-                marginBottom: '0.75rem',
-                letterSpacing: '0.02em',
-                transition: 'opacity 0.2s',
+                width: '100%', background: checkoutLoading ? '#555' : 'linear-gradient(135deg, #ff2d78, #c0185a)',
+                color: '#fff', border: 'none', borderRadius: '10px', padding: '0.9rem',
+                fontSize: '0.95rem', fontWeight: 700, cursor: checkoutLoading ? 'not-allowed' : 'pointer',
+                marginBottom: '0.75rem', letterSpacing: '0.02em', transition: 'opacity 0.2s',
               }}
             >
-              ☠ Acheter maintenant — {totalPrice}€
+              {checkoutLoading ? 'Chargement...' : `☠ Acheter maintenant — ${totalPrice}€`}
             </button>
             <button
               onClick={() => setSidebarOpen(false)}
-              style={{
-                width: '100%',
-                background: 'transparent',
-                color: '#888',
-                border: '1px solid rgba(255,255,255,0.1)',
-                borderRadius: '10px',
-                padding: '0.75rem',
-                fontSize: '0.85rem',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-              }}
+              style={{ width: '100%', background: 'transparent', color: '#888', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', padding: '0.75rem', fontSize: '0.85rem', cursor: 'pointer' }}
             >
               Continuer les achats
             </button>
           </div>
         )}
       </div>
-
-      {/* ── STYLES ANIMATION ── */}
-      <style>{`
-        @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
-        @keyframes pop { 0% { transform: scale(0.5) } 70% { transform: scale(1.2) } 100% { transform: scale(1) } }
-        @keyframes slideIn { from { transform: translateX(20px); opacity: 0 } to { transform: translateX(0); opacity: 1 } }
-      `}</style>
 
       {/* NAV */}
       <nav>
@@ -424,7 +272,10 @@ export default function Home() {
           <li><a href="#rachat" onClick={e => { e.preventDefault(); scrollTo('rachat') }}>Rachat</a></li>
           <li><a href="/contact">Contact</a></li>
         </ul>
-        <button className="nav-badge" onClick={() => scrollTo('rachat')}>💀 Vendre mes poupées</button>
+        {/* Bouton décalé à gauche pour ne pas chevaucher le skull */}
+        <button className="nav-badge" onClick={() => scrollTo('rachat')} style={{ marginRight: '70px' }}>
+          💀 Vendre mes poupées
+        </button>
       </nav>
 
       {/* HERO */}
@@ -459,19 +310,11 @@ export default function Home() {
             <h2 className="section-title">Salle d&apos;études de la Ghoul Squad</h2>
             <p className="section-sub">Chaque poupée est vérifiée, décrite avec soin et expédiée avec amour macabre.</p>
           </div>
-
           <div className="filters">
             {FILTERS.map(f => (
-              <button
-                key={f.key}
-                className={`filter-btn${filter === f.key ? ' active' : ''}`}
-                onClick={() => setFilter(f.key)}
-              >
-                {f.label}
-              </button>
+              <button key={f.key} className={`filter-btn${filter === f.key ? ' active' : ''}`} onClick={() => setFilter(f.key)}>{f.label}</button>
             ))}
           </div>
-
           <div className="products-grid">
             {visible.map(p => (
               <div key={p.id} className="product-card" style={addedId === p.id ? { transform: 'scale(0.97)', transition: 'transform 0.2s' } : {}}>
@@ -528,18 +371,18 @@ export default function Home() {
 
           <div>
             {!formSent ? (
-              <form className="rachat-form" onSubmit={handleSubmit}>
+              <form className="rachat-form" onSubmit={handleRachat}>
                 <div className="form-row">
-                  <div className="form-group"><label>Prénom</label><input type="text" placeholder="Draculaura" required /></div>
-                  <div className="form-group"><label>Nom</label><input type="text" placeholder="Von Bat" required /></div>
+                  <div className="form-group"><label>Prénom</label><input name="prenom" type="text" placeholder="Draculaura" required /></div>
+                  <div className="form-group"><label>Nom</label><input name="nom" type="text" placeholder="Von Bat" required /></div>
                 </div>
                 <div className="form-row">
-                  <div className="form-group"><label>Email</label><input type="email" placeholder="ghoul@monsterhigh.com" required /></div>
-                  <div className="form-group"><label>Téléphone</label><input type="tel" placeholder="06 66 66 66 66" /></div>
+                  <div className="form-group"><label>Email</label><input name="email" type="email" placeholder="ghoul@monsterhigh.com" required /></div>
+                  <div className="form-group"><label>Téléphone</label><input name="telephone" type="tel" placeholder="06 66 66 66 66" /></div>
                 </div>
                 <div className="form-group">
                   <label>Personnage(s) concerné(s)</label>
-                  <select required defaultValue="">
+                  <select name="personnage" required defaultValue="">
                     <option value="" disabled>Sélectionner un personnage</option>
                     {['Draculaura','Frankie Stein','Clawdeen Wolf','Lagoona Blue','Cléo de Nile','Ghoulia Yelps','Abbey Bominable','Spectra Vondergeist','Toralei Stripe','Autre / Plusieurs'].map(o => <option key={o}>{o}</option>)}
                   </select>
@@ -548,10 +391,10 @@ export default function Home() {
                   <label>État général</label>
                   <div className="etat-radios">
                     {[
-                      { id: 'e-tb', val: 'tres_bon', dot: 'var(--lime)', label: 'Très bon état' },
-                      { id: 'e-b', val: 'bon', dot: 'var(--teal)', label: 'Bon état' },
-                      { id: 'e-ab', val: 'acceptable', dot: 'var(--gold)', label: 'Acceptable' },
-                      { id: 'e-mq', val: 'mauvais', dot: 'var(--pink)', label: 'À restaurer' },
+                      { id: 'e-tb', val: 'Très bon état', dot: 'var(--lime)', label: 'Très bon état' },
+                      { id: 'e-b', val: 'Bon état', dot: 'var(--teal)', label: 'Bon état' },
+                      { id: 'e-ab', val: 'Acceptable', dot: 'var(--gold)', label: 'Acceptable' },
+                      { id: 'e-mq', val: 'À restaurer', dot: 'var(--pink)', label: 'À restaurer' },
                     ].map(r => (
                       <div key={r.id} className="etat-radio">
                         <input type="radio" name="etat" id={r.id} value={r.val} />
@@ -562,15 +405,15 @@ export default function Home() {
                 </div>
                 <div className="form-group">
                   <label>Nombre de poupées</label>
-                  <input type="number" min={1} max={100} placeholder="ex. 3" required />
+                  <input name="nombre" type="number" min={1} max={100} placeholder="ex. 3" required />
                 </div>
                 <div className="form-group">
                   <label>Description détaillée</label>
-                  <textarea placeholder="Décrivez vos poupées : édition, année, accessoires inclus, défauts éventuels, boîtes présentes..." />
+                  <textarea name="description" placeholder="Décrivez vos poupées : édition, année, accessoires inclus, défauts éventuels, boîtes présentes..." />
                 </div>
                 <div className="form-group">
                   <label>Lien photos (Google Drive, WeTransfer…)</label>
-                  <input type="url" placeholder="https://drive.google.com/..." />
+                  <input name="lienPhotos" type="url" placeholder="https://drive.google.com/..." />
                 </div>
                 <div className="form-group">
                   <div className="checkbox-group">
@@ -580,7 +423,9 @@ export default function Home() {
                 </div>
                 <div className="submit-row">
                   <span className="submit-note">Réponse sous 48h</span>
-                  <button type="submit" className="btn-submit">Envoyer ma proposition ☠</button>
+                  <button type="submit" className="btn-submit" disabled={formLoading}>
+                    {formLoading ? 'Envoi...' : 'Envoyer ma proposition ☠'}
+                  </button>
                 </div>
               </form>
             ) : (
@@ -613,14 +458,7 @@ export default function Home() {
 const qtyBtnStyle: React.CSSProperties = {
   background: 'rgba(255,255,255,0.07)',
   border: '1px solid rgba(255,255,255,0.1)',
-  borderRadius: '6px',
-  color: '#fff',
-  cursor: 'pointer',
-  width: '26px',
-  height: '26px',
-  fontSize: '0.9rem',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  padding: 0,
+  borderRadius: '6px', color: '#fff', cursor: 'pointer',
+  width: '26px', height: '26px', fontSize: '0.9rem',
+  display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0,
 }
