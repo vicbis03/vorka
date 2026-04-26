@@ -6,12 +6,15 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
+function checkAuth(req: NextRequest) {
+  const token = req.cookies.get('admin_token')?.value
+  return token === process.env.ADMIN_PASSWORD
+}
+
 export async function GET(req: NextRequest) {
+  if (!checkAuth(req)) return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
   const { searchParams } = new URL(req.url)
   const type = searchParams.get('type')
-  const pwd = req.headers.get('x-admin-password')
-  if (pwd !== process.env.ADMIN_PASSWORD) return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
-
   if (type === 'produits') {
     const { data } = await supabase.from('produits').select('*').order('created_at', { ascending: false })
     return NextResponse.json({ data })
@@ -32,8 +35,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const pwd = req.headers.get('x-admin-password')
-  if (pwd !== process.env.ADMIN_PASSWORD) return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
+  if (!checkAuth(req)) return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
   const body = await req.json()
   const { type, action, data } = body
 
@@ -52,7 +54,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: !error, error })
     }
   }
-
   if (type === 'promo') {
     if (action === 'create') {
       const { data: row, error } = await supabase.from('promos').insert([data]).select().single()
@@ -68,12 +69,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: !error, error })
     }
   }
-
   if (type === 'rachat' && action === 'update') {
     const { id, ...rest } = data
     const { error } = await supabase.from('rachats').update(rest).eq('id', id)
     return NextResponse.json({ success: !error, error })
   }
-
   return NextResponse.json({ error: 'Action inconnue' }, { status: 400 })
 }
