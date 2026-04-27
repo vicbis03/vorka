@@ -58,7 +58,6 @@ export async function POST(req: NextRequest) {
     const { error } = await supabase.from(table).delete().eq('id', data.id)
     return NextResponse.json({ success: !error, error })
   }
+
   return NextResponse.json({ error: 'Action inconnue' }, { status: 400 })
-}
-  )
 }
