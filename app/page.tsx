@@ -45,8 +45,8 @@ export default function Home() {
 
   const totalItems = cart.reduce((acc, i) => acc + i.qty, 0)
   const totalPrice = cart.reduce((acc, i) => acc + i.priceNum * i.qty, 0)
-  const discount = promoApplied ? Math.round(totalPrice * promoApplied.discount / 100) : 0
-  const totalFinal = totalPrice - discount
+  const discount = promoApplied ? promoApplied.discount : 0
+  const totalFinal = Math.max(0, totalPrice - discount)
 
   const addToCart = (product: Product) => {
     setCart(prev => {
@@ -71,12 +71,12 @@ export default function Home() {
     const res = await fetch('/api/promo', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code: promoCode.toUpperCase() }),
+      body: JSON.stringify({ code: promoCode.toUpperCase(), total: totalPrice }),
     })
     const data = await res.json()
     setPromoLoading(false)
     if (data.valid) {
-      setPromoApplied({ discount: data.discount, description: data.description })
+      setPromoApplied({ discount: data.discount, description: data.description, type: data.type, value: data.value })
       setPromoError(null)
     } else {
       setPromoError(data.error || 'Code invalide')
@@ -274,7 +274,7 @@ export default function Home() {
               </div>
               {promoApplied && (
                 <div style={{ display:'flex', justifyContent:'space-between', marginBottom:'0.3rem' }}>
-                  <span style={{ color:'#4ade80', fontSize:'0.85rem' }}>Réduction (-{promoApplied.discount}%)</span>
+                  <span style={{ color:'#4ade80', fontSize:'0.85rem' }}>Réduction ({promoApplied.type === "percent" ? `-${promoApplied.value}%` : `-${promoApplied.value}€`})</span>
                   <span style={{ color:'#4ade80', fontSize:'0.85rem' }}>-{discount}€</span>
                 </div>
               )}
@@ -309,7 +309,6 @@ export default function Home() {
           <li><a href="#catalog" onClick={e => { e.preventDefault(); scrollTo('catalog') }}>Boutique</a></li>
           <li><a href="#rachat" onClick={e => { e.preventDefault(); scrollTo('rachat') }}>Rachat</a></li>
           <li><a href="/contact">Contact</a></li>
-          <li><a href="/inscription">Mon compte</a></li>
         </ul>
         <button className="nav-badge" onClick={() => scrollTo('rachat')} style={{ marginRight:'70px' }}>
           💀 Vendre mes poupées
