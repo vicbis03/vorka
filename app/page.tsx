@@ -37,7 +37,7 @@ export default function Home() {
   const [checkoutError, setCheckoutError] = useState<string | null>(null)
   const [checkoutLoading, setCheckoutLoading] = useState(false)
   const [promoCode, setPromoCode] = useState('')
-  const [promoApplied, setPromoApplied] = useState<{discount:number,description:string}|null>(null)
+  const [promoApplied, setPromoApplied] = useState<{discount:number,description:string,type:string,value:number}|null>(null)
   const [promoError, setPromoError] = useState<string|null>(null)
   const [promoLoading, setPromoLoading] = useState(false)
 
