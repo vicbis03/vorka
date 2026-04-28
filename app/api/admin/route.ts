@@ -14,22 +14,38 @@ export async function GET(req: NextRequest) {
   if (!checkAuth(req)) return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
   const { searchParams } = new URL(req.url)
   const type = searchParams.get('type')
+  const showArchived = searchParams.get('archived') === 'true'
 
-  const tableMap: Record<string, string> = {
-    produits: 'produits', promos: 'promos',
-    clients: 'contacts', rachats: 'rachats', commandes: 'commandes',
+  if (type === 'produits') {
+    const { data } = await supabase.from('produits').select('*').order('created_at', { ascending: false })
+    return NextResponse.json({ data })
   }
-
+  if (type === 'promos') {
+    const { data } = await supabase.from('promos').select('*').order('created_at', { ascending: false })
+    return NextResponse.json({ data })
+  }
+  if (type === 'clients') {
+    const { data } = await supabase.from('contacts').select('*')
+      .eq('archive', showArchived)
+      .order('created_at', { ascending: false })
+    return NextResponse.json({ data })
+  }
   if (type === 'clients_comptes') {
     const { data } = await supabase.from('clients').select('*').order('created_at', { ascending: false })
     return NextResponse.json({ data })
   }
-
-  if (type && tableMap[type]) {
-    const { data } = await supabase.from(tableMap[type]).select('*').order('created_at', { ascending: false })
+  if (type === 'rachats') {
+    const { data } = await supabase.from('rachats').select('*')
+      .eq('archive', showArchived)
+      .order('created_at', { ascending: false })
     return NextResponse.json({ data })
   }
-
+  if (type === 'commandes') {
+    const { data } = await supabase.from('commandes').select('*')
+      .eq('archive', showArchived)
+      .order('created_at', { ascending: false })
+    return NextResponse.json({ data })
+  }
   return NextResponse.json({ error: 'Type inconnu' }, { status: 400 })
 }
 
@@ -39,7 +55,8 @@ export async function POST(req: NextRequest) {
   const { type, action, data } = body
 
   const tableMap: Record<string, string> = {
-    produit: 'produits', promo: 'promos', rachat: 'rachats', commande: 'commandes',
+    produit: 'produits', promo: 'promos', rachat: 'rachats',
+    commande: 'commandes', contact: 'contacts',
   }
 
   const table = tableMap[type]
@@ -56,6 +73,14 @@ export async function POST(req: NextRequest) {
   }
   if (action === 'delete') {
     const { error } = await supabase.from(table).delete().eq('id', data.id)
+    return NextResponse.json({ success: !error, error })
+  }
+  if (action === 'archive') {
+    const { error } = await supabase.from(table).update({ archive: true }).eq('id', data.id)
+    return NextResponse.json({ success: !error, error })
+  }
+  if (action === 'unarchive') {
+    const { error } = await supabase.from(table).update({ archive: false }).eq('id', data.id)
     return NextResponse.json({ success: !error, error })
   }
 
