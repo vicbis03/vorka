@@ -94,7 +94,7 @@ export default function Home() {
         body: JSON.stringify({
           items: cart.map(i => ({ id: i.id, name: i.name, price: i.priceNum, qty: i.qty })),
           promoCode: promoApplied ? promoCode.toUpperCase() : null,
-          discount,
+          discountAmount: promoApplied ? discount : 0,
         }),
       })
       const data = await res.json()
@@ -309,6 +309,7 @@ export default function Home() {
           <li><a href="#catalog" onClick={e => { e.preventDefault(); scrollTo('catalog') }}>Boutique</a></li>
           <li><a href="#rachat" onClick={e => { e.preventDefault(); scrollTo('rachat') }}>Rachat</a></li>
           <li><a href="/contact">Contact</a></li>
+          <li><a href="/inscription">Mon compte</a></li>
         </ul>
         <button className="nav-badge" onClick={() => scrollTo('rachat')} style={{ marginRight:'70px' }}>
           💀 Vendre mes poupées
