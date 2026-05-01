@@ -44,6 +44,11 @@ export default function InscriptionPage() {
 
   const handleRegister = async () => {
     if (!form.prenom || !form.email || !form.password) return setError('Prénom, email et mot de passe obligatoires')
+    if (!form.dateNaissance) return setError('Date de naissance obligatoire')
+    const today = new Date()
+    const birth = new Date(form.dateNaissance)
+    const age = today.getFullYear() - birth.getFullYear() - (today < new Date(today.getFullYear(), birth.getMonth(), birth.getDate()) ? 1 : 0)
+    if (age < 18) return setError('Tu dois avoir au moins 18 ans pour créer un compte ☠')
     if (form.password !== form.confirm) return setError('Les mots de passe ne correspondent pas')
     if (form.password.length < 8) return setError('Mot de passe trop court (8 caractères min)')
     if (pwdStrength.score < 2) return setError('Mot de passe trop faible — ajoute des chiffres ou majuscules')
