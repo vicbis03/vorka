@@ -1,309 +1,159 @@
 'use client'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@supabase/supabase-js'
 
-import { useState } from 'react'
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
-type FilterType = 'all' | 'draculaura' | 'frankie' | 'clawdeen' | 'lagoona' | 'cleo'
+const iS: React.CSSProperties = { width:'100%', background:'#1a1a1a', border:'1px solid rgba(255,255,255,0.08)', borderRadius:'8px', padding:'0.75rem 1rem', color:'#fff', fontSize:'0.9rem', outline:'none', boxSizing:'border-box' }
+const lS: React.CSSProperties = { color:'#888', fontSize:'0.75rem', display:'block', marginBottom:'0.3rem', textTransform:'uppercase', letterSpacing:'0.04em' }
 
-const PRODUCTS = [
-  {
-    id: 1,
-    char: 'draculaura',
-    emoji: '🦇',
-    bg: 'bg-draculaura',
-    badge: 'Très bon état',
-    badgeClass: 'badge-tb',
-    character: 'Draculaura',
-    name: "Draculaura Sweet 1600 — Edition Anniversaire",
-    meta1: '🌙 Complète avec accessoires',
-    meta2: '📦 Boîte incluse',
-    price: '18€',
-    sold: false,
-  },
-  {
-    id: 2,
-    char: 'frankie',
-    emoji: '⚡',
-    bg: 'bg-frankie',
-    badge: 'Bon état',
-    badgeClass: 'badge-b',
-    character: 'Frankie Stein',
-    name: "Frankie Stein Electrifying Style — 1ère Gen",
-    meta1: '🔩 Quelques taches mineures',
-    meta2: '📦 Sans boîte',
-    price: '12€',
-    sold: false,
-  },
-  {
-    id: 3,
-    char: 'clawdeen',
-    emoji: '🐾',
-    bg: 'bg-clawdeen',
-    badge: 'Très bon état',
-    badgeClass: 'badge-tb',
-    character: 'Clawdeen Wolf',
-    name: "Clawdeen Wolf Scaris City of Frights",
-    meta1: '🌟 Complète avec accessoires',
-    meta2: '📦 Boîte incluse',
-    price: '22€',
-    sold: false,
-  },
-  {
-    id: 4,
-    char: 'lagoona',
-    emoji: '🐚',
-    bg: 'bg-lagoona',
-    badge: 'Acceptable',
-    badgeClass: 'badge-ab',
-    character: 'Lagoona Blue',
-    name: "Lagoona Blue Skull Shores — Edition Été",
-    meta1: '💧 Cheveux légèrement emmêlés',
-    meta2: '📦 Sans boîte',
-    price: '9€',
-    sold: false,
-  },
-  {
-    id: 5,
-    char: 'cleo',
-    emoji: '𓂀',
-    bg: 'bg-cleo',
-    badge: 'Très bon état',
-    badgeClass: 'badge-tb',
-    character: 'Cléo de Nile',
-    name: "Cléo de Nile Gloom Beach — Rare",
-    meta1: '👑 Tous les bijoux présents',
-    meta2: '📦 Boîte incluse',
-    price: '28€',
-    sold: false,
-  },
-  {
-    id: 6,
-    char: 'draculaura',
-    emoji: '🦇',
-    bg: 'bg-draculaura',
-    badge: 'Vendu',
-    badgeClass: 'badge-sold',
-    character: 'Draculaura',
-    name: "Draculaura Dead Tired — Pyjama Party",
-    meta1: 'Poupée vendue',
-    meta2: '',
-    price: '15€',
-    sold: true,
-  },
-]
+export default function MonComptePage() {
+  const router = useRouter()
+  const [user, setUser] = useState<any>(null)
+  const [profile, setProfile] = useState<any>(null)
+  const [form, setForm] = useState({ prenom:'', nom:'', telephone:'', adresse:'', code_postal:'', ville:'' })
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [msg, setMsg] = useState('')
+  const [confirmDelete, setConfirmDelete] = useState(false)
+  const [editMode, setEditMode] = useState(false)
 
-const FILTERS: { key: FilterType; label: string }[] = [
-  { key: 'all', label: 'Tout voir' },
-  { key: 'draculaura', label: 'Draculaura' },
-  { key: 'frankie', label: 'Frankie Stein' },
-  { key: 'clawdeen', label: 'Clawdeen Wolf' },
-  { key: 'lagoona', label: 'Lagoona Blue' },
-  { key: 'cleo', label: 'Cléo de Nile' },
-]
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      if (!data.user) { router.push('/inscription'); return }
+      setUser(data.user)
+      // Charger profil depuis table clients
+      supabase.from('clients').select('*').eq('user_id', data.user.id).single().then(({ data: p }) => {
+        if (p) { setProfile(p); setForm({ prenom:p.prenom||'', nom:p.nom||'', telephone:p.telephone||'', adresse:p.adresse||'', code_postal:p.code_postal||'', ville:p.ville||'' }) }
+        setLoading(false)
+      })
+    })
+  }, [router])
 
-export default function Home() {
-  const [filter, setFilter] = useState<FilterType>('all')
-  const [formSent, setFormSent] = useState(false)
+  const flash = (m: string) => { setMsg(m); setTimeout(() => setMsg(''), 4000) }
 
-  const scrollTo = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+  const handleSave = async () => {
+    setSaving(true)
+    const { error } = await supabase.from('clients').update(form).eq('user_id', user.id)
+    setSaving(false)
+    if (!error) { setProfile((p: any) => ({...p,...form})); setEditMode(false); flash('✅ Profil mis à jour !') }
+    else flash('❌ Erreur lors de la sauvegarde')
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setFormSent(true)
+  const handleDelete = async () => {
+    const res = await fetch('/api/auth/delete', { method:'DELETE' })
+    if (res.ok) router.push('/')
+    else flash('❌ Erreur lors de la suppression')
   }
 
-  const visible = PRODUCTS.filter(p => filter === 'all' || p.char === filter)
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    await fetch('/api/auth/logout', { method:'POST' })
+    router.push('/')
+  }
+
+  if (loading) return (
+    <div style={{ minHeight:'100vh', background:'#0a0a0a', display:'flex', alignItems:'center', justifyContent:'center' }}>
+      <p style={{ color:'#666' }}>Chargement...</p>
+    </div>
+  )
 
   return (
-    <>
-      {/* NAV */}
-      <nav>
-        <a href="#" className="nav-logo">VORKA — Ghoul&apos;s <span>Closet</span></a>
-        <ul>
-          <li><a href="#catalog" onClick={e => { e.preventDefault(); scrollTo('catalog') }}>Boutique</a></li>
-          <li><a href="#rachat" onClick={e => { e.preventDefault(); scrollTo('rachat') }}>Rachat</a></li>
-          <li><a href="/contact">Contact</a></li>
-        </ul>
-        <button className="nav-badge" onClick={() => scrollTo('rachat')}>💀 Vendre mes poupées</button>
-      </nav>
+    <div style={{ minHeight:'100vh', background:'#0a0a0a', fontFamily:'Arial,sans-serif', padding:'2rem 1rem' }}>
+      <div style={{ maxWidth:'580px', margin:'0 auto' }}>
+        <a href="/" style={{ color:'#888', textDecoration:'none', fontSize:'0.82rem', display:'block', marginBottom:'1.5rem' }}>← Retour à la boutique</a>
 
-      {/* HERO */}
-      <section className="hero">
-        <div className="hero-bg" />
-        <div className="skull-deco left">☠</div>
-        <div className="skull-deco right">☠</div>
-        <div className="hero-content">
-          <p className="hero-eyebrow">☠ Collection exclusive de seconde main ☠</p>
-          <h1 className="hero-title">
-            <span className="line1">Monster High</span>
-            <span className="line2">collection</span>
-            <span className="line3">d&apos;occasion</span>
-          </h1>
-          <p className="hero-sub">Des poupées monstrueusement belles à prix décharnés. Achetez, vendez, — rejoignez la Ghoul Squad !</p>
-          <div className="hero-ctas">
-            <a href="#catalog" className="btn-primary" onClick={e => { e.preventDefault(); scrollTo('catalog') }}>Voir la boutique</a>
-            <a href="#rachat" className="btn-secondary" onClick={e => { e.preventDefault(); scrollTo('rachat') }}>Proposer un rachat</a>
+        {/* Header profil */}
+        <div style={{ display:'flex', alignItems:'center', gap:'1rem', marginBottom:'2rem' }}>
+          <div style={{ width:'60px', height:'60px', borderRadius:'50%', background:'linear-gradient(135deg,#ff2d78,#c0185a)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'1.5rem', fontWeight:700, color:'#fff', flexShrink:0 }}>
+            {(profile?.prenom||user?.email||'?')[0].toUpperCase()}
           </div>
-          <div className="hero-stats">
-            <div className="hero-stat"><span className="num">150+</span><span className="label">Poupées disponibles</span></div>
-            <div className="hero-stat"><span className="num">72h</span><span className="label">Délai d&apos;expédition</span></div>
-          </div>
-        </div>
-      </section>
-
-      {/* CATALOG */}
-      <section id="catalog">
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <div className="section-header">
-            <p className="section-tag">☠ Boutique</p>
-            <h2 className="section-title">Salle d&apos;études de la Ghoul Squad</h2>
-            <p className="section-sub">Chaque poupée est vérifiée, décrite avec soin et expédiée avec amour macabre.</p>
-          </div>
-
-          <div className="filters">
-            {FILTERS.map(f => (
-              <button
-                key={f.key}
-                className={`filter-btn${filter === f.key ? ' active' : ''}`}
-                onClick={() => setFilter(f.key)}
-              >
-                {f.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="products-grid">
-            {visible.map(p => (
-              <div key={p.id} className="product-card">
-                <div className={`doll-placeholder ${p.bg}`} style={p.sold ? { filter: 'grayscale(0.7)' } : {}}>
-                  <span style={{ fontSize: '5rem', position: 'relative', zIndex: 1, opacity: p.sold ? 0.5 : 1 }}>{p.emoji}</span>
-                  <div className={`badge-etat ${p.badgeClass}`}>{p.badge}</div>
-                </div>
-                <div className="product-body">
-                  <p className="product-character">{p.character}</p>
-                  <h3 className="product-name">{p.name}</h3>
-                  <div className="product-meta">
-                    <span style={p.sold ? { color: 'rgba(200,184,216,0.4)' } : {}}>{p.meta1}</span>
-                    {p.meta2 && <span>{p.meta2}</span>}
-                  </div>
-                  <div className="product-footer">
-                    <span className="product-price" style={p.sold ? { color: 'rgba(255,45,120,0.3)' } : {}}>{p.price}</span>
-                    <button className="btn-add" disabled={p.sold}>
-                      {p.sold ? 'Épuisé' : '+ Panier'}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* RACHAT */}
-      <section id="rachat">
-        <div className="rachat-layout">
-          {/* Info */}
           <div>
-            <div className="section-header">
-              <p className="section-tag">☠ Vous vendez ?</p>
-              <h2 className="section-title">Proposition de rachat</h2>
-              <p className="section-sub">Vos poupées méritent une seconde vie. Proposez-nous votre collection, on étudie tout avec soin.</p>
+            <h1 style={{ color:'#fff', margin:0, fontSize:'1.3rem', fontWeight:700 }}>
+              {profile?.prenom ? `${profile.prenom} ${profile.nom||''}`.trim() : user?.email}
+            </h1>
+            <p style={{ color:'#666', margin:'2px 0 0', fontSize:'0.82rem' }}>{user?.email}</p>
+          </div>
+        </div>
+
+        {msg && <div style={{ background:msg.startsWith('✅')?'#0f2e1a':'#2e0f0f', border:`1px solid ${msg.startsWith('✅')?'#1a5c34':'#5c1a1a'}`, borderRadius:'8px', padding:'0.75rem 1rem', color:msg.startsWith('✅')?'#4ade80':'#f87171', marginBottom:'1.5rem', fontSize:'0.88rem' }}>{msg}</div>}
+
+        {/* Infos / formulaire */}
+        <div style={{ background:'#111', border:'1px solid rgba(255,255,255,0.07)', borderRadius:'12px', padding:'1.5rem', marginBottom:'1rem' }}>
+          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'1.25rem' }}>
+            <h2 style={{ color:'#fff', margin:0, fontSize:'1rem', fontWeight:700 }}>Mes informations</h2>
+            {!editMode && <button onClick={()=>setEditMode(true)} style={{ background:'rgba(255,45,120,0.1)', border:'none', borderRadius:'8px', color:'#ff2d78', cursor:'pointer', padding:'0.4rem 0.9rem', fontSize:'0.82rem', fontWeight:600 }}>✏️ Modifier</button>}
+          </div>
+
+          {editMode ? (
+            <div style={{ display:'flex', flexDirection:'column', gap:'0.9rem' }}>
+              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.75rem' }}>
+                <div><label style={lS}>Prénom</label><input value={form.prenom} onChange={e=>setForm({...form,prenom:e.target.value})} style={iS} /></div>
+                <div><label style={lS}>Nom</label><input value={form.nom} onChange={e=>setForm({...form,nom:e.target.value})} style={iS} /></div>
+              </div>
+              <div><label style={lS}>Téléphone</label><input value={form.telephone} onChange={e=>setForm({...form,telephone:e.target.value})} style={iS} /></div>
+              <div><label style={lS}>Adresse</label><input value={form.adresse} onChange={e=>setForm({...form,adresse:e.target.value})} style={iS} /></div>
+              <div style={{ display:'grid', gridTemplateColumns:'1fr 2fr', gap:'0.75rem' }}>
+                <div><label style={lS}>Code postal</label><input value={form.code_postal} onChange={e=>setForm({...form,code_postal:e.target.value})} style={iS} /></div>
+                <div><label style={lS}>Ville</label><input value={form.ville} onChange={e=>setForm({...form,ville:e.target.value})} style={iS} /></div>
+              </div>
+              <div style={{ display:'flex', gap:'0.75rem', marginTop:'0.25rem' }}>
+                <button onClick={handleSave} disabled={saving} style={{ flex:1, background:'linear-gradient(135deg,#ff2d78,#c0185a)', color:'#fff', border:'none', borderRadius:'8px', padding:'0.75rem', fontWeight:700, cursor:saving?'not-allowed':'pointer', fontSize:'0.9rem' }}>
+                  {saving?'Sauvegarde...':'✅ Enregistrer'}
+                </button>
+                <button onClick={()=>setEditMode(false)} style={{ background:'rgba(255,255,255,0.06)', border:'none', borderRadius:'8px', color:'#888', cursor:'pointer', padding:'0.75rem 1rem', fontSize:'0.85rem' }}>Annuler</button>
+              </div>
             </div>
-            {[
-              { icon: '📸', title: 'Comment ça marche', text: 'Remplissez le formulaire avec les infos de vos poupées et quelques photos. On vous répond sous 48h avec une estimation de rachat.' },
-              { icon: '💰', title: 'Prix de rachat', text: 'On offre 40 à 70% de la valeur marchande selon l\'état, la rareté et les accessoires inclus. Paiement par virement ou bon d\'achat.' },
-              { icon: '📦', title: 'Expédition', text: 'Vous payez les frais d\'envoi, on les rembourse à réception si le colis correspond à la description. Emballage soigneux obligatoire !' },
-              { icon: '✅', title: 'Ce qu\'on rachète', text: 'Toutes les générations Monster High, accessoires, meubles, playsets. On n\'accepte pas les poupées fortement abîmées ou sans têtes 💀' },
-            ].map(b => (
-              <div key={b.title} className="info-block">
-                <h4>{b.icon} {b.title}</h4>
-                <p>{b.text}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Form */}
-          <div>
-            {!formSent ? (
-              <form className="rachat-form" onSubmit={handleSubmit}>
-                <div className="form-row">
-                  <div className="form-group"><label>Prénom</label><input type="text" placeholder="Draculaura" required /></div>
-                  <div className="form-group"><label>Nom</label><input type="text" placeholder="Von Bat" required /></div>
+          ) : (
+            <div style={{ display:'flex', flexDirection:'column', gap:'0.6rem' }}>
+              {[
+                ['Prénom', profile?.prenom],
+                ['Nom', profile?.nom],
+                ['Téléphone', profile?.telephone],
+                ['Adresse', profile?.adresse],
+                ['Code postal', profile?.code_postal],
+                ['Ville', profile?.ville],
+                ['Date de naissance', profile?.date_naissance],
+              ].map(([label, value]) => value && (
+                <div key={label as string} style={{ display:'flex', gap:'0.5rem' }}>
+                  <span style={{ color:'#666', fontSize:'0.82rem', minWidth:'120px' }}>{label}</span>
+                  <span style={{ color:'#ddd', fontSize:'0.82rem' }}>{value as string}</span>
                 </div>
-                <div className="form-row">
-                  <div className="form-group"><label>Email</label><input type="email" placeholder="ghoul@monsterhigh.com" required /></div>
-                  <div className="form-group"><label>Téléphone</label><input type="tel" placeholder="06 66 66 66 66" /></div>
-                </div>
-                <div className="form-group">
-                  <label>Personnage(s) concerné(s)</label>
-                  <select required defaultValue="">
-                    <option value="" disabled>Sélectionner un personnage</option>
-                    {['Draculaura','Frankie Stein','Clawdeen Wolf','Lagoona Blue','Cléo de Nile','Ghoulia Yelps','Abbey Bominable','Spectra Vondergeist','Toralei Stripe','Autre / Plusieurs'].map(o => <option key={o}>{o}</option>)}
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label>État général</label>
-                  <div className="etat-radios">
-                    {[
-                      { id: 'e-tb', val: 'tres_bon', dot: 'var(--lime)', label: 'Très bon état' },
-                      { id: 'e-b', val: 'bon', dot: 'var(--teal)', label: 'Bon état' },
-                      { id: 'e-ab', val: 'acceptable', dot: 'var(--gold)', label: 'Acceptable' },
-                      { id: 'e-mq', val: 'mauvais', dot: 'var(--pink)', label: 'À restaurer' },
-                    ].map(r => (
-                      <div key={r.id} className="etat-radio">
-                        <input type="radio" name="etat" id={r.id} value={r.val} />
-                        <label htmlFor={r.id}><span className="etat-dot" style={{ background: r.dot }} />{r.label}</label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="form-group">
-                  <label>Nombre de poupées</label>
-                  <input type="number" min={1} max={100} placeholder="ex. 3" required />
-                </div>
-                <div className="form-group">
-                  <label>Description détaillée</label>
-                  <textarea placeholder="Décrivez vos poupées : édition, année, accessoires inclus, défauts éventuels, boîtes présentes..." />
-                </div>
-                <div className="form-group">
-                  <label>Lien photos (Google Drive, WeTransfer…)</label>
-                  <input type="url" placeholder="https://drive.google.com/..." />
-                </div>
-                <div className="form-group">
-                  <div className="checkbox-group">
-                    <input type="checkbox" id="consent" required />
-                    <label htmlFor="consent">J&apos;accepte que mes données soient utilisées pour traiter ma demande de rachat. Aucune donnée ne sera partagée avec des tiers. 🖤</label>
-                  </div>
-                </div>
-                <div className="submit-row">
-                  <span className="submit-note">Réponse sous 48h</span>
-                  <button type="submit" className="btn-submit">Envoyer ma proposition ☠</button>
-                </div>
-              </form>
-            ) : (
-              <div className="success-msg show">
-                <h3>☠ Proposition reçue !</h3>
-                <p>Merci ! On examine votre collection avec attention et on revient vers vous très vite. Restez à l&apos;écoute, ghoul ! 🖤</p>
-              </div>
-            )}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
-      </section>
 
-      {/* FOOTER */}
-      <footer id="footer">
-        <div className="logo">Ghoul&apos;s <span>Closet</span></div>
-        <div className="footer-links">
-          <a href="/a-propos">À propos</a>
-          <a href="#catalog" onClick={e => { e.preventDefault(); scrollTo('catalog') }}>Boutique</a>
-          <a href="#rachat" onClick={e => { e.preventDefault(); scrollTo('rachat') }}>Rachat</a>
-          <a href="/cgv">CGV</a>
-          <a href="/contact">Contact</a>
+        {/* Actions compte */}
+        <div style={{ display:'flex', flexDirection:'column', gap:'0.75rem' }}>
+          <button onClick={handleLogout} style={{ width:'100%', background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:'10px', color:'#aaa', cursor:'pointer', padding:'0.85rem', fontSize:'0.9rem', fontWeight:600 }}>
+            Déconnexion
+          </button>
+          <button onClick={()=>setConfirmDelete(true)} style={{ width:'100%', background:'rgba(255,50,50,0.06)', border:'1px solid rgba(255,50,50,0.15)', borderRadius:'10px', color:'#f87171', cursor:'pointer', padding:'0.85rem', fontSize:'0.9rem', fontWeight:600 }}>
+            Supprimer mon compte
+          </button>
         </div>
-        <p>☠ 2025 — Ghoul&apos;s Closet — Tous droits réservés ☠</p>
-        <p style={{ marginTop: '0.5rem', fontSize: '0.7rem', opacity: 0.5 }}>Fan site — Monster High est une marque déposée de Mattel, Inc.</p>
-      </footer>
-    </>
+
+        {/* Modal suppression */}
+        {confirmDelete && (
+          <>
+            <div onClick={()=>setConfirmDelete(false)} style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.7)', zIndex:1000 }} />
+            <div style={{ position:'fixed', top:'50%', left:'50%', transform:'translate(-50%,-50%)', background:'#111', border:'1px solid rgba(255,50,50,0.3)', borderRadius:'16px', padding:'2rem', width:'90%', maxWidth:'380px', zIndex:1001, textAlign:'center' }}>
+              <div style={{ fontSize:'3rem', marginBottom:'1rem' }}>⚠️</div>
+              <h3 style={{ color:'#fff', margin:'0 0 0.5rem' }}>Supprimer le compte ?</h3>
+              <p style={{ color:'#888', fontSize:'0.85rem', margin:'0 0 1.5rem', lineHeight:1.6 }}>Cette action est irréversible. Toutes tes données seront supprimées définitivement.</p>
+              <div style={{ display:'flex', gap:'0.75rem' }}>
+                <button onClick={handleDelete} style={{ flex:1, background:'#dc2626', color:'#fff', border:'none', borderRadius:'8px', padding:'0.75rem', fontWeight:700, cursor:'pointer' }}>Oui, supprimer</button>
+                <button onClick={()=>setConfirmDelete(false)} style={{ flex:1, background:'rgba(255,255,255,0.06)', border:'none', borderRadius:'8px', color:'#888', cursor:'pointer', padding:'0.75rem' }}>Annuler</button>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
   )
 }
