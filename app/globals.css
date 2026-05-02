@@ -674,3 +674,100 @@ footer .footer-links a:hover { color: var(--pink); }
   .rachat-layout { grid-template-columns: 1fr; gap: 2rem; }
   .form-row { grid-template-columns: 1fr; }
 }
+/* ── MOBILE OPTIMIZATION ─────────────────────────────── */
+@media (max-width: 768px) {
+  /* Nav */
+  nav {
+    padding: 0.75rem 1rem !important;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  nav ul {
+    display: none !important;
+  }
+  .nav-badge {
+    margin-right: 60px !important;
+    font-size: 0.78rem !important;
+    padding: 0.45rem 0.8rem !important;
+  }
+
+  /* Hero */
+  .hero-content {
+    padding: 1rem !important;
+  }
+  .hero-title .line1 { font-size: clamp(2rem, 10vw, 3.5rem) !important; }
+  .hero-title .line2 { font-size: clamp(2.5rem, 13vw, 5rem) !important; }
+  .hero-title .line3 { font-size: clamp(2.5rem, 13vw, 5rem) !important; }
+  .hero-ctas {
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+  }
+  .hero-ctas a {
+    text-align: center !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .hero-stats {
+    gap: 1.5rem !important;
+  }
+  .skull-deco { display: none !important; }
+
+  /* Filtres */
+  .filters {
+    gap: 0.4rem !important;
+    justify-content: flex-start !important;
+    overflow-x: auto !important;
+    padding-bottom: 0.5rem !important;
+    flex-wrap: nowrap !important;
+  }
+  .filter-btn {
+    white-space: nowrap !important;
+    font-size: 0.8rem !important;
+    padding: 0.4rem 0.8rem !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Grille produits */
+  .products-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.75rem !important;
+  }
+  .product-name { font-size: 0.78rem !important; }
+  .product-price { font-size: 1rem !important; }
+  .btn-add { font-size: 0.78rem !important; padding: 0.45rem 0.7rem !important; }
+
+  /* Section rachat */
+  .rachat-layout {
+    grid-template-columns: 1fr !important;
+  }
+  .rachat-form {
+    padding: 1rem !important;
+  }
+  .form-row {
+    grid-template-columns: 1fr !important;
+  }
+  .etat-radios {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  /* Footer */
+  footer {
+    padding: 2rem 1rem !important;
+  }
+  .footer-links {
+    flex-wrap: wrap !important;
+    gap: 0.6rem !important;
+    justify-content: center !important;
+  }
+
+  /* Sidebar panier */
+  div[style*="maxWidth: '400px'"] {
+    max-width: 100% !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .products-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
