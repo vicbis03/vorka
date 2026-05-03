@@ -1,8 +1,5 @@
 'use client'
 
-import { createClient } from '@supabase/supabase-js'
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
-
 import { useState, useEffect } from 'react'
 
 type FilterType = 'all' | 'draculaura' | 'frankie' | 'clawdeen' | 'lagoona' | 'cleo' | 'pops' | 'pop'
@@ -63,11 +60,10 @@ export default function Home() {
     supabase.auth.getUser().then(({ data }) => {
       if (data.user) {
         const prenom = data.user.user_metadata?.prenom
-        setUserName(prenom || data.user.email?.split('@')[0] || 'Mon compte')
+        setUserName(prenom || data.user.email?.split('@')[0] || null)
       }
     })
   }, [])
-  const [currentUser, setCurrentUser] = useState<{ prenom: string } | null>(null)
   const [checkoutError, setCheckoutError] = useState<string | null>(null)
   const [checkoutLoading, setCheckoutLoading] = useState(false)
   const [promoCode, setPromoCode] = useState('')
@@ -295,8 +291,8 @@ export default function Home() {
           <li><a href="#rachat" onClick={e => { e.preventDefault(); scrollTo('rachat') }}>Rachat</a></li>
           <li><a href="/contact">Contact</a></li>
           <li>
-            <a href={currentUser ? '/mon-compte' : '/inscription'} style={{ display:'flex', alignItems:'center', gap:'0.4rem' }}>
-              {currentUser ? `👤 ${currentUser.prenom}` : 'Mon compte'}
+            <a href={userName ? '/mon-compte' : '/inscription'} style={{ display:'flex', alignItems:'center', gap:'0.4rem', color: userName ? '#ff2d78' : 'inherit' }}>
+              {userName ? `👤 ${userName}` : 'Mon compte'}
             </a>
           </li>
         </ul>
