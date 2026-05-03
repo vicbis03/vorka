@@ -58,7 +58,6 @@ export async function POST(req: NextRequest) {
     produit: 'produits', promo: 'promos', rachat: 'rachats',
     commande: 'commandes', contact: 'contacts',
   }
-
   const table = tableMap[type]
   if (!table) return NextResponse.json({ error: 'Type inconnu' }, { status: 400 })
 
@@ -83,6 +82,5 @@ export async function POST(req: NextRequest) {
     const { error } = await supabase.from(table).update({ archive: false }).eq('id', data.id)
     return NextResponse.json({ success: !error, error })
   }
-
   return NextResponse.json({ error: 'Action inconnue' }, { status: 400 })
 }
