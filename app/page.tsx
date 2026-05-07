@@ -61,6 +61,7 @@ export default function Home() {
   const [skullHovered, setSkullHovered] = useState(false)
   const [addedId, setAddedId] = useState<number | null>(null)
   const [userName, setUserName] = useState<string | null>(null)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -291,21 +292,58 @@ export default function Home() {
 
       {/* NAV */}
       <nav>
-        <a href="#" className="nav-logo">VORKA — Ghoul&apos;s <span>Closet</span></a>
-        <ul>
+        <a href="/" className="nav-logo">VORKA — Ghoul&apos;s <span>Closet</span></a>
+
+        {/* Menu desktop */}
+        <ul className="nav-desktop">
           <li><a href="#catalog" onClick={e => { e.preventDefault(); scrollTo('catalog') }}>Boutique</a></li>
           <li><a href="#rachat" onClick={e => { e.preventDefault(); scrollTo('rachat') }}>Rachat</a></li>
           <li><a href="/contact">Contact</a></li>
           <li>
-            <a href={userName ? '/mon-compte' : '/inscription'} style={{ display:'flex', alignItems:'center', gap:'0.4rem', color: userName ? '#ff2d78' : 'inherit' }}>
+            <a href={userName ? '/mon-compte' : '/inscription'} style={{ color: userName ? '#ff2d78' : 'inherit', fontWeight: userName ? 700 : 400 }}>
               {userName ? `👤 ${userName}` : 'Mon compte'}
             </a>
           </li>
         </ul>
-        <button className="nav-badge" onClick={() => scrollTo('rachat')} style={{ marginRight:'70px' }}>
+
+        {/* Bouton Vendre desktop */}
+        <button className="nav-badge nav-badge-desktop" onClick={() => scrollTo('rachat')} style={{ marginRight:'70px' }}>
           💀 Vendre mes poupées
         </button>
+
+        {/* Menu mobile - hamburger */}
+        <button
+          className="nav-hamburger"
+          onClick={() => setMenuOpen(m => !m)}
+          style={{ background:'none', border:'none', color:'#fff', fontSize:'1.5rem', cursor:'pointer', padding:'0.25rem', marginRight:'60px' }}
+          aria-label="Menu"
+        >
+          {menuOpen ? '✕' : '☰'}
+        </button>
       </nav>
+
+      {/* Menu mobile déroulant */}
+      {menuOpen && (
+        <div style={{ position:'fixed', top:'60px', left:0, right:0, background:'#0a0a0a', borderBottom:'1px solid rgba(255,45,120,0.2)', zIndex:999, padding:'1rem 1.5rem', display:'flex', flexDirection:'column', gap:'0', boxShadow:'0 8px 32px rgba(0,0,0,0.5)' }}>
+          {[
+            { label:'🛍️ Boutique', action: () => { scrollTo('catalog'); setMenuOpen(false) } },
+            { label:'💰 Rachat', action: () => { scrollTo('rachat'); setMenuOpen(false) } },
+          ].map(item => (
+            <button key={item.label} onClick={item.action} style={{ background:'none', border:'none', color:'#fff', fontSize:'1rem', fontWeight:600, padding:'1rem 0', textAlign:'left', cursor:'pointer', borderBottom:'1px solid rgba(255,255,255,0.05)' }}>
+              {item.label}
+            </button>
+          ))}
+          <a href="/contact" onClick={() => setMenuOpen(false)} style={{ color:'#fff', fontSize:'1rem', fontWeight:600, padding:'1rem 0', textDecoration:'none', borderBottom:'1px solid rgba(255,255,255,0.05)', display:'block' }}>
+            📬 Contact
+          </a>
+          <a href={userName ? '/mon-compte' : '/inscription'} onClick={() => setMenuOpen(false)} style={{ color: userName ? '#ff2d78' : '#fff', fontSize:'1rem', fontWeight:700, padding:'1rem 0', textDecoration:'none', borderBottom:'1px solid rgba(255,255,255,0.05)', display:'block' }}>
+            {userName ? `👤 ${userName}` : '👤 Mon compte'}
+          </a>
+          <button onClick={() => { scrollTo('rachat'); setMenuOpen(false) }} style={{ background:'linear-gradient(135deg,#ff2d78,#c0185a)', color:'#fff', border:'none', borderRadius:'8px', padding:'0.85rem', fontWeight:700, cursor:'pointer', marginTop:'0.75rem', fontSize:'0.95rem' }}>
+            💀 Vendre mes poupées
+          </button>
+        </div>
+      )}
 
       {/* HERO */}
       <section className="hero">
