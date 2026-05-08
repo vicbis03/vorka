@@ -820,3 +820,38 @@ footer .footer-links a:hover { color: var(--pink); }
     font-size: 16px !important;
   }
 }
+
+/* ═══ CORRECTIONS PC ═══ */
+
+/* Nav centrée sur desktop */
+nav {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+nav ul, .nav-desktop {
+  display: flex !important;
+  align-items: center !important;
+  gap: 2rem !important;
+  list-style: none !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  position: absolute !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+}
+
+@media (max-width: 768px) {
+  nav ul, .nav-desktop {
+    display: none !important;
+    position: static !important;
+    transform: none !important;
+  }
+}
+
+/* Btn submit pas déformé */
+.btn-submit {
+  clip-path: none !important;
+  -webkit-clip-path: none !important;
+  transform: skew(0) !important;
+}
