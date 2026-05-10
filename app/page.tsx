@@ -348,31 +348,33 @@ export default function Home() {
       </div>
 
       {/* ── NAV ── */}
-      <nav>
+      <nav style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'0 1.5rem', position:'relative' }}>
+
+        {/* Logo */}
         <a href="/" className="nav-logo">VORKA — Ghoul&apos;s <span>Closet</span></a>
 
-        <ul className="nav-desktop" style={{ display:'flex', alignItems:'center', gap:'2rem', listStyle:'none', margin:0, padding:0 }}>
+        {/* Liens desktop — centrés */}
+        <ul style={{ display:'flex', alignItems:'center', gap:'2rem', listStyle:'none', margin:0, padding:0, position:'absolute', left:'50%', transform:'translateX(-50%)' }}
+          className="nav-desktop">
           <li><a href="#catalog" onClick={e => { e.preventDefault(); scrollTo('catalog') }}>Boutique</a></li>
           <li><a href="#rachat" onClick={e => { e.preventDefault(); scrollTo('rachat') }}>Rachat</a></li>
           <li><a href="/contact">Contact</a></li>
           <li>
-            <a
-              href={userName ? '/mon-compte' : '/inscription'}
-              style={{ color: userName ? '#ff2d78' : 'inherit', fontWeight: userName ? 700 : 400, display:'flex', alignItems:'center', gap:'0.35rem' }}
-            >
+            <a href={userName ? '/mon-compte' : '/inscription'}
+              style={{ color: userName ? '#ff2d78' : 'inherit', fontWeight: userName ? 700 : 400 }}>
               {userName ? `👤 ${userName}` : 'Mon compte'}
             </a>
           </li>
         </ul>
 
-        <button className="nav-badge nav-badge-desktop" onClick={() => scrollTo('rachat')} style={{ marginRight:'70px' }}>
-          💀 Vendre mes poupées
-        </button>
+        {/* Droite : espace réservé pour le skull fixe */}
+        <div style={{ width:'52px' }} />
 
+        {/* Hamburger mobile seulement */}
         <button
           className="nav-hamburger"
           onClick={() => setMenuOpen(m => !m)}
-          style={{ background:'none', border:'none', color:'#fff', fontSize:'1.5rem', cursor:'pointer', padding:'0.25rem', marginRight:'60px' }}
+          style={{ display:'none', background:'none', border:'none', color:'#fff', fontSize:'1.5rem', cursor:'pointer', padding:'0.25rem' }}
           aria-label="Menu"
         >
           {menuOpen ? '✕' : '☰'}
