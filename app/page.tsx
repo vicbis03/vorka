@@ -72,26 +72,14 @@ export default function Home() {
       })
   }, [])
 
-  // Détecter l'utilisateur connecté
+  // Détecter l'utilisateur connecté via cookie serveur
   useEffect(() => {
-    const checkUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (session?.user) {
-        const prenom = session.user.user_metadata?.prenom
-        setUserName(prenom || session.user.email?.split('@')[0] || '👤')
-      }
-    }
-    checkUser()
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
-        const prenom = session.user.user_metadata?.prenom
-        setUserName(prenom || session.user.email?.split('@')[0] || '👤')
-      } else {
-        setUserName(null)
-      }
-    })
-    return () => subscription.unsubscribe()
+    fetch('/api/auth/me')
+      .then(r => r.json())
+      .then(d => {
+        if (d.user) setUserName(d.user.prenom || d.user.email?.split('@')[0] || '👤')
+      })
+      .catch(() => {})
   }, [])
 
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
