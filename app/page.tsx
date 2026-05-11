@@ -72,14 +72,23 @@ export default function Home() {
       })
   }, [])
 
-  // Détecter l'utilisateur connecté via cookie serveur
+  // Détecter l'utilisateur connecté
   useEffect(() => {
-    fetch('/api/auth/me')
-      .then(r => r.json())
-      .then(d => {
-        if (d.user) setUserName(d.user.prenom || d.user.email?.split('@')[0] || '👤')
-      })
-      .catch(() => {})
+    // Lire le cookie user_prenom (non httpOnly) pour affichage rapide
+    const getCookie = (name: string) => {
+      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'))
+      return match ? decodeURIComponent(match[2]) : null
+    }
+    const prenom = getCookie('user_prenom')
+    if (prenom) {
+      setUserName(prenom)
+    } else {
+      // Fallback API
+      fetch('/api/auth/me')
+        .then(r => r.json())
+        .then(d => { if (d.user?.prenom) setUserName(d.user.prenom) })
+        .catch(() => {})
+    }
   }, [])
 
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
@@ -186,7 +195,7 @@ export default function Home() {
         onMouseEnter={() => setSkullHovered(true)}
         onMouseLeave={() => setSkullHovered(false)}
         style={{
-          position:'fixed', top:'1rem', right:'1.2rem', zIndex:1000,
+          position:'fixed', top:'0.6rem', right:'4.5rem', zIndex:1000,
           background: skullHovered ? 'rgba(255,45,120,0.18)' : 'rgba(20,0,10,0.7)',
           border: skullHovered ? '2px solid #ff2d78' : '2px solid rgba(255,45,120,0.3)',
           borderRadius:'50%', width:'52px', height:'52px', cursor:'pointer',
@@ -362,7 +371,7 @@ export default function Home() {
         <button
           className="nav-hamburger"
           onClick={() => setMenuOpen(m => !m)}
-          style={{ display:'none', background:'none', border:'none', color:'#fff', fontSize:'1.5rem', cursor:'pointer', padding:'0.25rem' }}
+          style={{ display:'none', background:'none', border:'none', color:'#fff', fontSize:'1.5rem', cursor:'pointer', padding:'0.25rem', position:'fixed', top:'0.75rem', right:'1rem', zIndex:1001 }}
           aria-label="Menu"
         >
           {menuOpen ? '✕' : '☰'}
