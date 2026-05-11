@@ -133,40 +133,6 @@ export default function AdminPage() {
   const tabStyle = (t: Tab): React.CSSProperties => ({ padding:'0.55rem 1rem', borderRadius:'8px', border:'none', cursor:'pointer', fontWeight:600, fontSize:'0.8rem', background:tab===t?'#ff2d78':'rgba(255,255,255,0.06)', color:tab===t?'#fff':'#888', transition:'all 0.2s' })
   const sColor = (s: string) => ({ payée:'#60a5fa',en_préparation:'#fbbf24',expédiée:'#a78bfa',livrée:'#4ade80',remboursée:'#f87171',en_attente:'#fbbf24',accepté:'#4ade80',refusé:'#f87171',reçu:'#a78bfa',répondu:'#4ade80',nouveau:'#60a5fa',contacté:'#a78bfa' } as Record<string,string>)[s] || '#888'
 
-  // Composant Modal réponse réutilisable
-  const ReplyModal = ({ title, subtitle, showMontant, onSend, onClose }: { title: string; subtitle: string; showMontant?: boolean; onSend: () => void; onClose: () => void }) => (
-    <>
-      <div onClick={onClose} style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.7)', zIndex:2000, backdropFilter:'blur(4px)' }} />
-      <div style={{ position:'fixed', top:'50%', left:'50%', transform:'translate(-50%,-50%)', background:'#111', border:'1px solid rgba(255,45,120,0.3)', borderRadius:'16px', padding:'2rem', width:'90%', maxWidth:'520px', zIndex:2001, maxHeight:'85vh', overflowY:'auto' }}>
-        <h3 style={{ color:'#ff2d78', margin:'0 0 4px' }}>✉️ {title}</h3>
-        <p style={{ color:'#666', fontSize:'0.82rem', margin:'0 0 1.5rem' }}>{subtitle}</p>
-        {showMontant && (
-          <div style={{ marginBottom:'1rem' }}>
-            <label style={{ color:'#888', fontSize:'0.78rem', display:'block', marginBottom:'0.4rem' }}>Type de réponse</label>
-            <select value={replyType} onChange={e=>setReplyType(e.target.value)} style={iS}>
-              <option value="accepté">✅ Offre acceptée</option>
-              <option value="contacté">📞 Prise de contact</option>
-              <option value="refusé">❌ Refus</option>
-            </select>
-          </div>
-        )}
-        {showMontant && replyType === 'accepté' && (
-          <div style={{ marginBottom:'1rem' }}>
-            <label style={{ color:'#888', fontSize:'0.78rem', display:'block', marginBottom:'0.4rem' }}>Montant offert (€)</label>
-            <input type="number" placeholder="Ex: 25" value={replyMontant} onChange={e=>setReplyMontant(e.target.value)} style={iS} />
-          </div>
-        )}
-        <div style={{ marginBottom:'1.5rem' }}>
-          <label style={{ color:'#888', fontSize:'0.78rem', display:'block', marginBottom:'0.4rem' }}>Message *</label>
-          <textarea rows={6} value={replyText} onChange={e=>setReplyText(e.target.value)} style={{ ...iS, minHeight:'130px', resize:'vertical', lineHeight:1.6 }} placeholder="Écris ta réponse ici..." />
-        </div>
-        <div style={{ display:'flex', gap:'0.75rem' }}>
-          <button onClick={onSend} disabled={replyLoading} style={{ ...btnP, flex:1, opacity:replyLoading?0.6:1 }}>{replyLoading?'Envoi...':'✉️ Envoyer par email'}</button>
-          <button onClick={onClose} style={{ background:'rgba(255,255,255,0.06)', border:'none', borderRadius:'8px', color:'#888', cursor:'pointer', padding:'0.7rem 1rem' }}>Annuler</button>
-        </div>
-      </div>
-    </>
-  )
 
   return (
     <div style={{ minHeight:'100vh', background:'#0a0a0a', color:'#fff', fontFamily:'Arial,sans-serif', padding:'1.5rem', maxWidth:'1100px', margin:'0 auto' }}>
@@ -426,24 +392,71 @@ export default function AdminPage() {
       )}
 
       {/* ══ MODALS RÉPONSE ══ */}
+      {/* ══ MODAL RÉPONSE RACHAT ══ */}
       {replyRachatModal && (
-        <ReplyModal
-          title={`Répondre à ${replyRachatModal.prenom}`}
-          subtitle={`${replyRachatModal.email} — ${replyRachatModal.personnage}`}
-          showMontant
-          onSend={sendReplyRachat}
-          onClose={()=>setReplyRachatModal(null)}
-        />
+        <>
+          <div onClick={()=>setReplyRachatModal(null)} style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.7)', zIndex:2000, backdropFilter:'blur(4px)' }} />
+          <div style={{ position:'fixed', top:'50%', left:'50%', transform:'translate(-50%,-50%)', background:'#111', border:'1px solid rgba(255,45,120,0.3)', borderRadius:'16px', padding:'2rem', width:'90%', maxWidth:'520px', zIndex:2001, maxHeight:'85vh', overflowY:'auto' }}>
+            <h3 style={{ color:'#ff2d78', margin:'0 0 4px' }}>✉️ Répondre à {replyRachatModal.prenom}</h3>
+            <p style={{ color:'#666', fontSize:'0.82rem', margin:'0 0 1.5rem' }}>{replyRachatModal.email} — {replyRachatModal.personnage}</p>
+            <div style={{ marginBottom:'1rem' }}>
+              <label style={{ color:'#888', fontSize:'0.78rem', display:'block', marginBottom:'0.4rem' }}>Type de réponse</label>
+              <select value={replyType} onChange={e=>setReplyType(e.target.value)} style={iS}>
+                <option value="accepté">✅ Offre acceptée</option>
+                <option value="contacté">📞 Prise de contact</option>
+                <option value="refusé">❌ Refus</option>
+              </select>
+            </div>
+            {replyType==='accepté' && (
+              <div style={{ marginBottom:'1rem' }}>
+                <label style={{ color:'#888', fontSize:'0.78rem', display:'block', marginBottom:'0.4rem' }}>Montant offert (€)</label>
+                <input type="number" placeholder="Ex: 25" value={replyMontant} onChange={e=>setReplyMontant(e.target.value)} style={iS} />
+              </div>
+            )}
+            <div style={{ marginBottom:'1.5rem' }}>
+              <label style={{ color:'#888', fontSize:'0.78rem', display:'block', marginBottom:'0.4rem' }}>Message *</label>
+              <textarea
+                rows={6}
+                value={replyText}
+                onChange={e=>setReplyText(e.target.value)}
+                style={{ ...iS, minHeight:'130px', resize:'vertical', lineHeight:1.6 }}
+                placeholder="Écris ta réponse ici..."
+                autoFocus
+              />
+            </div>
+            <div style={{ display:'flex', gap:'0.75rem' }}>
+              <button onClick={sendReplyRachat} disabled={replyLoading} style={{ ...btnP, flex:1, opacity:replyLoading?0.6:1 }}>{replyLoading?'Envoi...':'✉️ Envoyer'}</button>
+              <button onClick={()=>setReplyRachatModal(null)} style={{ background:'rgba(255,255,255,0.06)', border:'none', borderRadius:'8px', color:'#888', cursor:'pointer', padding:'0.7rem 1rem' }}>Annuler</button>
+            </div>
+          </div>
+        </>
       )}
+
+      {/* ══ MODAL RÉPONSE CONTACT ══ */}
       {replyContactModal && (
-        <ReplyModal
-          title={`Répondre à ${replyContactModal.nom}`}
-          subtitle={`${replyContactModal.email} — Sujet: ${replyContactModal.sujet}`}
-          onSend={sendReplyContact}
-          onClose={()=>setReplyContactModal(null)}
-        />
+        <>
+          <div onClick={()=>setReplyContactModal(null)} style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.7)', zIndex:2000, backdropFilter:'blur(4px)' }} />
+          <div style={{ position:'fixed', top:'50%', left:'50%', transform:'translate(-50%,-50%)', background:'#111', border:'1px solid rgba(255,45,120,0.3)', borderRadius:'16px', padding:'2rem', width:'90%', maxWidth:'520px', zIndex:2001, maxHeight:'85vh', overflowY:'auto' }}>
+            <h3 style={{ color:'#ff2d78', margin:'0 0 4px' }}>✉️ Répondre à {replyContactModal.nom}</h3>
+            <p style={{ color:'#666', fontSize:'0.82rem', margin:'0 0 1.5rem' }}>{replyContactModal.email} — Sujet: {replyContactModal.sujet}</p>
+            <div style={{ marginBottom:'1.5rem' }}>
+              <label style={{ color:'#888', fontSize:'0.78rem', display:'block', marginBottom:'0.4rem' }}>Message *</label>
+              <textarea
+                rows={6}
+                value={replyText}
+                onChange={e=>setReplyText(e.target.value)}
+                style={{ ...iS, minHeight:'130px', resize:'vertical', lineHeight:1.6 }}
+                placeholder="Écris ta réponse ici..."
+                autoFocus
+              />
+            </div>
+            <div style={{ display:'flex', gap:'0.75rem' }}>
+              <button onClick={sendReplyContact} disabled={replyLoading} style={{ ...btnP, flex:1, opacity:replyLoading?0.6:1 }}>{replyLoading?'Envoi...':'✉️ Envoyer'}</button>
+              <button onClick={()=>setReplyContactModal(null)} style={{ background:'rgba(255,255,255,0.06)', border:'none', borderRadius:'8px', color:'#888', cursor:'pointer', padding:'0.7rem 1rem' }}>Annuler</button>
+            </div>
+          </div>
+        </>
       )}
     </div>
   )
 }
-
