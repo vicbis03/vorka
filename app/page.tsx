@@ -47,6 +47,7 @@ export default function Home() {
   const [skullHovered, setSkullHovered] = useState(false)
   const [addedId, setAddedId] = useState<number | null>(null)
   const [userName, setUserName] = useState<string | null>(null)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [products, setProducts] = useState<Product[]>([])
   const [productsLoading, setProductsLoading] = useState(true)
@@ -82,11 +83,17 @@ export default function Home() {
     const prenom = getCookie('user_prenom')
     if (prenom) {
       setUserName(prenom)
+      setIsLoggedIn(true)
     } else {
       // Fallback API
       fetch('/api/auth/me')
         .then(r => r.json())
-        .then(d => { if (d.user?.prenom) setUserName(d.user.prenom) })
+        .then(d => {
+          if (d.user?.prenom) {
+            setUserName(d.user.prenom)
+            setIsLoggedIn(true)
+          }
+        })
         .catch(() => {})
     }
   }, [])
@@ -357,7 +364,7 @@ export default function Home() {
           <li><a href="#rachat" onClick={e => { e.preventDefault(); scrollTo('rachat') }}>Rachat</a></li>
           <li><a href="/contact">Contact</a></li>
           <li>
-            <a href={userName ? '/mon-compte' : '/inscription'}
+            <a href={isLoggedIn ? '/mon-compte' : '/inscription'}
               style={{ color: userName ? '#ff2d78' : 'inherit', fontWeight: userName ? 700 : 400 }}>
               {userName ? `👤 ${userName}` : 'Mon compte'}
             </a>
@@ -392,7 +399,7 @@ export default function Home() {
           <a href="/contact" onClick={() => setMenuOpen(false)} style={{ color:'#fff', fontSize:'1rem', fontWeight:600, padding:'1rem 0', textDecoration:'none', borderBottom:'1px solid rgba(255,255,255,0.05)', display:'block' }}>
             📬 Contact
           </a>
-          <a href={userName ? '/mon-compte' : '/inscription'} onClick={() => setMenuOpen(false)} style={{ color: userName ? '#ff2d78' : '#fff', fontSize:'1rem', fontWeight:700, padding:'1rem 0', textDecoration:'none', borderBottom:'1px solid rgba(255,255,255,0.05)', display:'block' }}>
+          <a href={isLoggedIn ? '/mon-compte' : '/inscription'} onClick={() => setMenuOpen(false)} style={{ color: userName ? '#ff2d78' : '#fff', fontSize:'1rem', fontWeight:700, padding:'1rem 0', textDecoration:'none', borderBottom:'1px solid rgba(255,255,255,0.05)', display:'block' }}>
             {userName ? `👤 ${userName}` : '👤 Mon compte'}
           </a>
           <button onClick={() => { scrollTo('rachat'); setMenuOpen(false) }} style={{ background:'linear-gradient(135deg,#ff2d78,#c0185a)', color:'#fff', border:'none', borderRadius:'8px', padding:'0.85rem', fontWeight:700, cursor:'pointer', marginTop:'0.75rem', fontSize:'0.95rem' }}>
@@ -600,7 +607,7 @@ export default function Home() {
           <a href="#rachat" onClick={e => { e.preventDefault(); scrollTo('rachat') }}>Rachat</a>
           <a href="/cgv">CGV</a>
           <a href="/contact">Contact</a>
-          <a href={userName ? '/mon-compte' : '/inscription'} style={{ color: userName ? '#ff2d78' : 'inherit' }}>
+          <a href={isLoggedIn ? '/mon-compte' : '/inscription'} style={{ color: userName ? '#ff2d78' : 'inherit' }}>
             {userName ? `👤 ${userName}` : 'Mon compte'}
           </a>
         </div>
